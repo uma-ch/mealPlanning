@@ -1,0 +1,31 @@
+{
+  "name": "recipe-planner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Collaborative recipe planning and grocery management app",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "client:dev": "npm run dev -w @recipe-planner/client",
+    "server:dev": "npm run dev -w @recipe-planner/server",
+    "extension:dev": "npm run dev -w @recipe-planner/extension",
+    "db:migrate": "npm run migrate -w @recipe-planner/server"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

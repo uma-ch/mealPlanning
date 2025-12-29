@@ -1,0 +1,20 @@
+{
+  "name": "@recipe-planner/extension",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser extension for saving recipes",
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0"
+  },
+  "dependencies": {
+    "@recipe-planner/shared": "*"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.254",
+    "vite": "^5.0.8",
+    "typescript": "^5.2.2",
+    "vite-plugin-web-extension": "^4.1.1"
+  }
+}
