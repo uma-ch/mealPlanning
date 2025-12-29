@@ -1,0 +1,56 @@
+services:
+  # Backend API Server
+  - type: web
+    name: recipe-planner-api
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build -w @recipe-planner/server
+    startCommand: npm start -w @recipe-planner/server
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: recipe-planner-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MAGIC_LINK_EXPIRY
+        value: 900000
+      - key: CLIENT_URL
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: FROM_EMAIL
+        sync: false
+
+  # Frontend Static Site
+  - type: web
+    name: recipe-planner-web
+    runtime: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build -w @recipe-planner/client
+    staticPublishPath: ./packages/client/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+databases:
+  - name: recipe-planner-db
+    databaseName: recipe_planner
+    user: recipe_planner_user
+    plan: free
+    region: oregon
