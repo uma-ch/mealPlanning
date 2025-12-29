@@ -33,11 +33,8 @@ services:
         sync: false
 
   # Frontend Static Site
-  - type: web
+  - type: static
     name: recipe-planner-web
-    runtime: node
-    region: oregon
-    plan: free
     buildCommand: npm install && npm run build -w @recipe-planner/client
     staticPublishPath: ./packages/client/dist
     routes:
