@@ -10,7 +10,15 @@ async function runMigration() {
   try {
     console.log('Running database migration...');
 
-    const schemaPath = join(__dirname, 'schema.sql');
+    // In production, __dirname is dist/db, so we need to go to src/db for schema.sql
+    // In development, __dirname is src/db, so schema.sql is in the same directory
+    let schemaPath = join(__dirname, 'schema.sql');
+
+    // If running from dist (production), adjust path to src
+    if (__dirname.includes('/dist/')) {
+      schemaPath = join(__dirname, '../../src/db/schema.sql');
+    }
+
     const schema = readFileSync(schemaPath, 'utf-8');
 
     await pool.query(schema);
