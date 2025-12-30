@@ -18,7 +18,7 @@ services:
       - key: MAGIC_LINK_EXPIRY
         value: 900000
       - key: CLIENT_URL
-        sync: false
+        value: https://mealplanning-helg.onrender.com
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT
