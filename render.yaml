@@ -6,7 +6,7 @@ services:
     region: oregon
     plan: free
     buildCommand: npm install --include=dev && npm run build -w @recipe-planner/server
-    startCommand: npm run start:production -w @recipe-planner/server
+    startCommand: npm start -w @recipe-planner/server
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
