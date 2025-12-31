@@ -1,5 +1,6 @@
 /* Import feature-specific styles */
 @import './recipes.css';
+@import './grocery.css';
 
 * {
   margin: 0;

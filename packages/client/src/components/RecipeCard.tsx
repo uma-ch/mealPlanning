@@ -2,14 +2,27 @@ import { Recipe } from '@recipe-planner/shared';
 
 interface RecipeCardProps {
   recipe: Recipe;
+  selected?: boolean;
+  onToggleSelect?: () => void;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-export default function RecipeCard({ recipe, onView, onEdit, onDelete }: RecipeCardProps) {
+export default function RecipeCard({ recipe, selected = false, onToggleSelect, onView, onEdit, onDelete }: RecipeCardProps) {
   return (
-    <div className="recipe-card" onClick={onView}>
+    <div className={`recipe-card ${selected ? 'selected' : ''}`} onClick={onView}>
+      {onToggleSelect && (
+        <div className="recipe-checkbox" onClick={(e) => { e.stopPropagation(); onToggleSelect(); }}>
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={() => {}}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+
       {recipe.imageUrl && (
         <div className="recipe-image">
           <img src={recipe.imageUrl} alt={recipe.title} />

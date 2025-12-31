@@ -12,6 +12,8 @@ export default function RecipesPage() {
   const [showForm, setShowForm] = useState(false);
   const [editingRecipe, setEditingRecipe] = useState<Recipe | null>(null);
   const [viewingRecipe, setViewingRecipe] = useState<Recipe | null>(null);
+  const [selectedRecipeIds, setSelectedRecipeIds] = useState<Set<string>>(new Set());
+  const [generatingList, setGeneratingList] = useState(false);
 
   const fetchRecipes = async () => {
     try {
@@ -93,6 +95,49 @@ export default function RecipesPage() {
     }
   };
 
+  const handleToggleSelect = (recipeId: string) => {
+    setSelectedRecipeIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(recipeId)) {
+        newSet.delete(recipeId);
+      } else {
+        newSet.add(recipeId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    setSelectedRecipeIds(new Set(recipes.map(r => r.id)));
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedRecipeIds(new Set());
+  };
+
+  const handleGenerateGroceryList = async () => {
+    if (selectedRecipeIds.size === 0) return;
+
+    try {
+      setGeneratingList(true);
+      const response = await fetch(`${API_URL}/grocery/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipeIds: Array.from(selectedRecipeIds) }),
+      });
+
+      if (!response.ok) throw new Error('Failed to generate grocery list');
+
+      alert('Grocery list generated! Check the Grocery List page.');
+      setSelectedRecipeIds(new Set());
+    } catch (err) {
+      console.error('Error generating grocery list:', err);
+      alert('Failed to generate grocery list');
+    } finally {
+      setGeneratingList(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="recipes-page">
@@ -104,13 +149,39 @@ export default function RecipesPage() {
   return (
     <div className="recipes-page">
       <div className="recipes-header">
-        <h1>My Recipes</h1>
-        <button
-          className="btn-primary"
-          onClick={() => setShowForm(true)}
-        >
-          + Add Recipe
-        </button>
+        <div className="header-left">
+          <h1>My Recipes</h1>
+          {recipes.length > 0 && (
+            <div className="selection-controls">
+              <button onClick={handleSelectAll} className="btn-text">
+                Select All
+              </button>
+              <button onClick={handleDeselectAll} className="btn-text">
+                Deselect All
+              </button>
+              {selectedRecipeIds.size > 0 && (
+                <span className="selection-count">
+                  {selectedRecipeIds.size} selected
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="header-actions">
+          <button
+            className="btn-secondary"
+            onClick={handleGenerateGroceryList}
+            disabled={selectedRecipeIds.size === 0 || generatingList}
+          >
+            {generatingList ? 'Generating...' : `Generate Grocery List (${selectedRecipeIds.size})`}
+          </button>
+          <button
+            className="btn-primary"
+            onClick={() => setShowForm(true)}
+          >
+            + Add Recipe
+          </button>
+        </div>
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -154,6 +225,8 @@ export default function RecipesPage() {
             <RecipeCard
               key={recipe.id}
               recipe={recipe}
+              selected={selectedRecipeIds.has(recipe.id)}
+              onToggleSelect={() => handleToggleSelect(recipe.id)}
               onView={() => setViewingRecipe(recipe)}
               onEdit={() => setEditingRecipe(recipe)}
               onDelete={() => handleDeleteRecipe(recipe.id)}
