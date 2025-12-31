@@ -64,6 +64,15 @@ export interface UpdateRecipeRequest {
   tags?: string[];
 }
 
+export interface ImportRecipeRequest {
+  url: string;
+}
+
+export interface ImportRecipeResponse {
+  recipe: Recipe;
+  source: 'schema.org' | 'claude-ai';
+}
+
 // Recipe from Extension
 export interface ExtensionRecipeRequest {
   url: string;

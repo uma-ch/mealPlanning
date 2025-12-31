@@ -4,6 +4,7 @@ import { API_URL } from '../config';
 import RecipeCard from '../components/RecipeCard';
 import RecipeForm from '../components/RecipeForm';
 import RecipeDetail from '../components/RecipeDetail';
+import RecipeImportModal from '../components/RecipeImportModal';
 
 export default function RecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -14,6 +15,7 @@ export default function RecipesPage() {
   const [viewingRecipe, setViewingRecipe] = useState<Recipe | null>(null);
   const [selectedRecipeIds, setSelectedRecipeIds] = useState<Set<string>>(new Set());
   const [generatingList, setGeneratingList] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
 
   const fetchRecipes = async () => {
     try {
@@ -138,6 +140,30 @@ export default function RecipesPage() {
     }
   };
 
+  const handleImportRecipe = async (url: string) => {
+    try {
+      const response = await fetch(`${API_URL}/recipes/import-url`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to import recipe');
+      }
+
+      const { recipe, source } = await response.json();
+      alert(`Recipe "${recipe.title}" imported successfully using ${source}!`);
+
+      await fetchRecipes();
+      setShowImportModal(false);
+    } catch (err: any) {
+      console.error('Error importing recipe:', err);
+      throw err; // Re-throw to let modal handle error display
+    }
+  };
+
   if (loading) {
     return (
       <div className="recipes-page">
@@ -176,6 +202,12 @@ export default function RecipesPage() {
             {generatingList ? 'Generating...' : `Generate Grocery List (${selectedRecipeIds.size})`}
           </button>
           <button
+            className="btn-secondary"
+            onClick={() => setShowImportModal(true)}
+          >
+            Import from URL
+          </button>
+          <button
             className="btn-primary"
             onClick={() => setShowForm(true)}
           >
@@ -212,6 +244,13 @@ export default function RecipesPage() {
             setShowForm(false);
             setEditingRecipe(null);
           }}
+        />
+      )}
+
+      {showImportModal && (
+        <RecipeImportModal
+          onImport={handleImportRecipe}
+          onClose={() => setShowImportModal(false)}
         />
       )}
 

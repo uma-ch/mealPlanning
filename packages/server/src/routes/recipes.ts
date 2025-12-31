@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import pool from '../db/connection.js';
-import type { CreateRecipeRequest, UpdateRecipeRequest, Recipe } from '@recipe-planner/shared';
+import type { CreateRecipeRequest, UpdateRecipeRequest, Recipe, ImportRecipeRequest } from '@recipe-planner/shared';
 import { z } from 'zod';
+import { fetchRecipeFromUrl, RecipeImportError } from '../services/recipeImport.js';
 
 const router = Router();
 
@@ -21,6 +22,10 @@ const updateRecipeSchema = z.object({
   instructions: z.string().min(1).optional(),
   imageUrl: z.string().url().optional(),
   tags: z.array(z.string()).optional(),
+});
+
+const importRecipeSchema = z.object({
+  url: z.string().url('Invalid URL format'),
 });
 
 // GET /api/recipes - Get all recipes for household
@@ -290,6 +295,138 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting recipe:', error);
     res.status(500).json({ error: 'Failed to delete recipe' });
+  }
+});
+
+// POST /api/recipes/import-url - Import recipe from URL
+router.post('/import-url', async (req, res) => {
+  try {
+    // Validate request
+    const validation = importRecipeSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).json({
+        error: 'Invalid request data',
+        details: validation.error,
+      });
+    }
+
+    const data: ImportRecipeRequest = validation.data;
+    const householdId = '00000000-0000-0000-0000-000000000001';
+    // Use null for created_by since we don't have real auth yet
+    const userId = null;
+
+    // Fetch and extract recipe from URL
+    let importResult;
+    try {
+      importResult = await fetchRecipeFromUrl(data.url);
+    } catch (error) {
+      if (error instanceof RecipeImportError) {
+        switch (error.code) {
+          case 'INVALID_URL':
+            return res.status(400).json({ error: error.message });
+          case 'FETCH_FAILED':
+            return res.status(404).json({ error: error.message });
+          case 'NO_RECIPE_FOUND':
+            return res.status(422).json({ error: error.message });
+          case 'CLAUDE_API_ERROR':
+            // Check if it's a configuration issue vs runtime issue
+            if (error.message.includes('not configured')) {
+              return res.status(503).json({ error: error.message });
+            }
+            if (error.message.includes('Too many requests')) {
+              return res.status(429).json({ error: error.message });
+            }
+            return res.status(500).json({ error: error.message });
+        }
+      }
+      throw error;
+    }
+
+    const { recipe: extractedRecipe, source } = importResult;
+
+    // Validate extracted data has required fields
+    if (!extractedRecipe.title || !extractedRecipe.ingredients || !extractedRecipe.instructions) {
+      return res.status(422).json({
+        error: 'Extracted recipe is missing required fields (title, ingredients, or instructions)',
+      });
+    }
+
+    // Insert recipe into database
+    const result = await pool.query(
+      `INSERT INTO recipes (
+        household_id,
+        title,
+        ingredients,
+        instructions,
+        source_url,
+        image_url,
+        raw_html_backup,
+        created_by
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING id, created_at, modified_at, was_modified`,
+      [
+        householdId,
+        extractedRecipe.title,
+        extractedRecipe.ingredients,
+        extractedRecipe.instructions,
+        data.url,
+        extractedRecipe.imageUrl || null,
+        extractedRecipe.rawHtml || null,
+        userId,
+      ]
+    );
+
+    const row = result.rows[0];
+
+    // Insert tags if provided
+    if (extractedRecipe.tags && extractedRecipe.tags.length > 0) {
+      const tagValues = extractedRecipe.tags.map((_tag, index) =>
+        `($1, $${index + 2})`
+      ).join(', ');
+      const tagParams = [row.id, ...extractedRecipe.tags];
+
+      await pool.query(
+        `INSERT INTO recipe_tags (recipe_id, tag) VALUES ${tagValues}`,
+        tagParams
+      );
+    }
+
+    // Fetch complete recipe with tags
+    const fullRecipe = await pool.query(
+      `SELECT r.*,
+              COALESCE(
+                json_agg(rt.tag) FILTER (WHERE rt.tag IS NOT NULL),
+                '[]'
+              ) as tags
+       FROM recipes r
+       LEFT JOIN recipe_tags rt ON r.id = rt.recipe_id
+       WHERE r.id = $1
+       GROUP BY r.id`,
+      [row.id]
+    );
+
+    const recipeRow = fullRecipe.rows[0];
+    const recipe: Recipe = {
+      id: recipeRow.id,
+      title: recipeRow.title,
+      ingredients: recipeRow.ingredients,
+      instructions: recipeRow.instructions,
+      sourceUrl: recipeRow.source_url,
+      imageUrl: recipeRow.image_url,
+      createdBy: recipeRow.created_by,
+      createdAt: recipeRow.created_at,
+      modifiedAt: recipeRow.modified_at,
+      wasModified: recipeRow.was_modified,
+      rawHtmlBackup: recipeRow.raw_html_backup,
+      householdId: recipeRow.household_id,
+      tags: recipeRow.tags || [],
+    };
+
+    res.status(201).json({ recipe, source });
+  } catch (error) {
+    console.error('Error importing recipe:', error);
+    res.status(500).json({ error: 'Failed to import recipe' });
   }
 });
 
