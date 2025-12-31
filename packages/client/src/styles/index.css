@@ -1,3 +1,6 @@
+/* Import feature-specific styles */
+@import './recipes.css';
+
 * {
   margin: 0;
   padding: 0;
