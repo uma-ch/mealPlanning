@@ -94,8 +94,9 @@ export interface CreateCalendarEntryRequest {
 export interface GroceryList {
   id: string;
   householdId: string;
-  createdAt: Date;
+  createdAt: string;
   isActive: boolean;
+  items: GroceryListItem[];
 }
 
 export interface GroceryListItem {
@@ -105,7 +106,7 @@ export interface GroceryListItem {
   ingredientText: string;
   category: GroceryCategory;
   isChecked: boolean;
-  checkedAt?: Date;
+  checkedAt?: string | null;
 }
 
 export enum GroceryCategory {
