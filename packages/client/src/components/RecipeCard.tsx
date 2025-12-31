@@ -13,12 +13,11 @@ export default function RecipeCard({ recipe, selected = false, onToggleSelect, o
   return (
     <div className={`recipe-card ${selected ? 'selected' : ''}`} onClick={onView}>
       {onToggleSelect && (
-        <div className="recipe-checkbox" onClick={(e) => { e.stopPropagation(); onToggleSelect(); }}>
+        <div className="recipe-checkbox" onClick={(e) => e.stopPropagation()}>
           <input
             type="checkbox"
             checked={selected}
-            onChange={() => {}}
-            onClick={(e) => e.stopPropagation()}
+            onChange={onToggleSelect}
           />
         </div>
       )}
