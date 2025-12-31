@@ -137,7 +137,7 @@ export default function GroceryListPage() {
   const categoryOrder = [
     GroceryCategory.PRODUCE,
     GroceryCategory.MEAT_SEAFOOD,
-    GroceryCategory.DAIRY_EGGS,
+    GroceryCategory.DAIRY,
     GroceryCategory.BAKERY,
     GroceryCategory.PANTRY,
     GroceryCategory.FROZEN,
