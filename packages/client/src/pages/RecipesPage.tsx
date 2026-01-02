@@ -164,6 +164,36 @@ export default function RecipesPage() {
     }
   };
 
+  const handleImportPdf = async (file: File): Promise<{ totalSaved: number; totalExtracted: number }> => {
+    const formData = new FormData();
+    formData.append('pdf', file);
+
+    try {
+      const response = await fetch(`${API_URL}/recipes/import-pdf`, {
+        method: 'POST',
+        body: formData, // No Content-Type header - browser sets it
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to import recipes from PDF');
+      }
+
+      const result = await response.json();
+
+      // Refresh recipe list
+      await fetchRecipes();
+
+      return {
+        totalSaved: result.totalSaved,
+        totalExtracted: result.totalExtracted,
+      };
+    } catch (err: any) {
+      console.error('Error importing PDF:', err);
+      throw err;
+    }
+  };
+
   if (loading) {
     return (
       <div className="recipes-page">
@@ -250,6 +280,7 @@ export default function RecipesPage() {
       {showImportModal && (
         <RecipeImportModal
           onImport={handleImportRecipe}
+          onImportPdf={handleImportPdf}
           onClose={() => setShowImportModal(false)}
         />
       )}

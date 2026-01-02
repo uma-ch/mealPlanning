@@ -438,3 +438,93 @@
   color: #666;
   font-size: 0.875rem;
 }
+
+/* Import Tabs */
+.import-tabs {
+  display: flex;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.import-tab {
+  flex: 1;
+  padding: 1rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.import-tab:hover {
+  color: #333;
+  background: #f5f5f5;
+}
+
+.import-tab.active {
+  color: #1976d2;
+  border-bottom-color: #1976d2;
+  background: white;
+}
+
+/* PDF Upload */
+.pdf-upload-group {
+  margin-bottom: 1.5rem;
+}
+
+.pdf-upload-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.pdf-dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  background: #fafafa;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.pdf-dropzone:hover {
+  border-color: #1976d2;
+  background: #f0f7ff;
+}
+
+.dropzone-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.upload-icon {
+  font-size: 3rem;
+}
+
+.file-icon {
+  font-size: 2.5rem;
+}
+
+.file-name {
+  font-weight: 500;
+  color: #333;
+  word-break: break-word;
+}
+
+.file-size {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.upload-hint {
+  font-size: 0.875rem;
+  color: #999;
+  margin: 0;
+}

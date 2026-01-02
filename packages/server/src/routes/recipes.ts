@@ -3,6 +3,9 @@ import pool from '../db/connection.js';
 import type { CreateRecipeRequest, UpdateRecipeRequest, Recipe, ImportRecipeRequest } from '@recipe-planner/shared';
 import { z } from 'zod';
 import { fetchRecipeFromUrl, RecipeImportError } from '../services/recipeImport.js';
+import { pdfUpload } from '../middleware/upload.js';
+import { extractRecipesFromPdf } from '../services/pdfRecipeImport.js';
+import { unlink } from 'fs/promises';
 
 const router = Router();
 
@@ -427,6 +430,110 @@ router.post('/import-url', async (req, res) => {
   } catch (error) {
     console.error('Error importing recipe:', error);
     res.status(500).json({ error: 'Failed to import recipe' });
+  }
+});
+
+// POST /api/recipes/import-pdf - Import recipes from PDF
+router.post('/import-pdf', pdfUpload.single('pdf'), async (req, res) => {
+  let filePath: string | undefined;
+
+  try {
+    // Validate file upload
+    if (!req.file) {
+      return res.status(400).json({ error: 'No PDF file uploaded' });
+    }
+
+    filePath = req.file.path;
+    const householdId = '00000000-0000-0000-0000-000000000001';
+    const userId = null; // No auth yet
+
+    // Extract recipes from PDF
+    let recipes;
+    try {
+      recipes = await extractRecipesFromPdf(filePath);
+    } catch (error) {
+      if (error instanceof RecipeImportError) {
+        // Map error codes to HTTP status
+        const statusMap: Record<string, number> = {
+          'PDF_PARSE_ERROR': 422,
+          'NO_RECIPE_FOUND': 422,
+          'CLAUDE_API_ERROR': 500,
+        };
+        const status = statusMap[error.code] || 500;
+        return res.status(status).json({ error: error.message });
+      }
+      throw error;
+    }
+
+    if (recipes.length === 0) {
+      return res.status(422).json({
+        error: 'No recipes found in PDF. Please ensure the PDF contains recipe text.'
+      });
+    }
+
+    // Insert all recipes into database
+    const insertedRecipes = [];
+    const errors = [];
+
+    for (const recipe of recipes) {
+      try {
+        // Insert recipe
+        const result = await pool.query(
+          `INSERT INTO recipes (
+            household_id, title, ingredients, instructions,
+            image_url, created_by
+          )
+          VALUES ($1, $2, $3, $4, $5, $6)
+          RETURNING id`,
+          [
+            householdId,
+            recipe.title,
+            recipe.ingredients,
+            recipe.instructions,
+            recipe.imageUrl || null,
+            userId,
+          ]
+        );
+
+        const recipeId = result.rows[0].id;
+
+        // Insert tags
+        if (recipe.tags && recipe.tags.length > 0) {
+          const tagValues = recipe.tags.map((_tag: string, idx: number) => `($1, $${idx + 2})`).join(', ');
+          const tagParams = [recipeId, ...recipe.tags];
+          await pool.query(
+            `INSERT INTO recipe_tags (recipe_id, tag) VALUES ${tagValues}`,
+            tagParams
+          );
+        }
+
+        insertedRecipes.push({ id: recipeId, title: recipe.title });
+      } catch (err: any) {
+        errors.push({ title: recipe.title, error: err.message });
+      }
+    }
+
+    // Return results
+    res.status(201).json({
+      success: true,
+      totalExtracted: recipes.length,
+      totalSaved: insertedRecipes.length,
+      recipes: insertedRecipes,
+      errors: errors.length > 0 ? errors : undefined,
+    });
+
+  } catch (error) {
+    console.error('Error importing PDF:', error);
+    res.status(500).json({ error: 'Failed to import recipes from PDF' });
+  } finally {
+    // Clean up uploaded file
+    if (filePath) {
+      try {
+        await unlink(filePath);
+      } catch (err) {
+        console.error('Failed to delete temp file:', err);
+      }
+    }
   }
 });
 

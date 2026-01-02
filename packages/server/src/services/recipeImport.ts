@@ -5,7 +5,7 @@ import Anthropic from '@anthropic-ai/sdk';
 export class RecipeImportError extends Error {
   constructor(
     message: string,
-    public code: 'FETCH_FAILED' | 'NO_RECIPE_FOUND' | 'CLAUDE_API_ERROR' | 'INVALID_URL'
+    public code: 'FETCH_FAILED' | 'NO_RECIPE_FOUND' | 'CLAUDE_API_ERROR' | 'INVALID_URL' | 'PDF_PARSE_ERROR'
   ) {
     super(message);
     this.name = 'RecipeImportError';

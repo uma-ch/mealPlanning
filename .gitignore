@@ -37,3 +37,4 @@ coverage/
 
 # Extension build
 packages/extension/dist/
+packages/server/temp-uploads/
