@@ -4,12 +4,18 @@ import { categorizeIngredient } from '../utils/categorizeIngredient.js';
 import type { GenerateGroceryListRequest, AddManualItemRequest, UpdateGroceryItemRequest, GroceryListItem } from '@recipe-planner/shared';
 import { z } from 'zod';
 import { GroceryCategory } from '@recipe-planner/shared';
+import { getRecipeIdsFromDateRange } from '../db/queries.js';
 
 const router = Router();
 
 // Validation schemas
 const generateListSchema = z.object({
   recipeIds: z.array(z.string().uuid()).min(1),
+});
+
+const dateRangeSchema = z.object({
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Start date must be in YYYY-MM-DD format'),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'End date must be in YYYY-MM-DD format'),
 });
 
 const addManualItemSchema = z.object({
@@ -187,6 +193,137 @@ router.post('/generate', async (req, res) => {
   } catch (error) {
     console.error('Error generating grocery list:', error);
     res.status(500).json({ error: 'Failed to generate grocery list' });
+  }
+});
+
+// POST /api/grocery/generate-from-calendar - Generate grocery list from calendar date range
+router.post('/generate-from-calendar', async (req, res) => {
+  try {
+    const validation = dateRangeSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).json({
+        error: 'Invalid date range',
+        details: validation.error.errors,
+      });
+    }
+
+    const { startDate, endDate } = validation.data;
+    const householdId = '00000000-0000-0000-0000-000000000001';
+
+    // Get recipe IDs from calendar date range
+    const recipeIds = await getRecipeIdsFromDateRange(householdId, startDate, endDate);
+
+    if (recipeIds.length === 0) {
+      return res.status(400).json({
+        error: 'No recipes found in selected date range',
+      });
+    }
+
+    // Start transaction (reuse same logic as /generate)
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // Deactivate previous grocery lists
+      await client.query(
+        'UPDATE grocery_lists SET is_active = false WHERE household_id = $1',
+        [householdId]
+      );
+
+      // Create new grocery list
+      const listResult = await client.query(
+        'INSERT INTO grocery_lists (household_id, is_active) VALUES ($1, true) RETURNING id',
+        [householdId]
+      );
+      const groceryListId = listResult.rows[0].id;
+
+      // Fetch recipes
+      const recipesResult = await client.query(
+        'SELECT id, ingredients FROM recipes WHERE id = ANY($1::uuid[])',
+        [recipeIds]
+      );
+
+      // Extract and categorize ingredients
+      const items: Array<{ recipeId: string; text: string; category: GroceryCategory }> = [];
+
+      for (const recipe of recipesResult.rows) {
+        // Split ingredients by newline or comma
+        const ingredientLines = recipe.ingredients.split(/\n|,/).map((line: string) => line.trim()).filter(Boolean);
+
+        for (const line of ingredientLines) {
+          const category = categorizeIngredient(line);
+          items.push({
+            recipeId: recipe.id,
+            text: line,
+            category,
+          });
+        }
+      }
+
+      // Bulk insert items
+      if (items.length > 0) {
+        const values: string[] = [];
+        const params: any[] = [];
+        let paramIndex = 1;
+
+        items.forEach(item => {
+          values.push(`($${paramIndex}, $${paramIndex + 1}, $${paramIndex + 2}, $${paramIndex + 3})`);
+          params.push(groceryListId, item.recipeId, item.text, item.category);
+          paramIndex += 4;
+        });
+
+        await client.query(
+          `INSERT INTO grocery_list_items (grocery_list_id, recipe_id, ingredient_text, category)
+           VALUES ${values.join(', ')}`,
+          params
+        );
+      }
+
+      // Fetch the complete grocery list with items
+      const result = await client.query(
+        `SELECT gl.*,
+                COALESCE(
+                  json_agg(
+                    json_build_object(
+                      'id', gli.id,
+                      'groceryListId', gli.grocery_list_id,
+                      'recipeId', gli.recipe_id,
+                      'ingredientText', gli.ingredient_text,
+                      'category', gli.category,
+                      'isChecked', gli.is_checked,
+                      'checkedAt', gli.checked_at
+                    ) ORDER BY gli.category, gli.created_at
+                  ) FILTER (WHERE gli.id IS NOT NULL),
+                  '[]'
+                ) as items
+         FROM grocery_lists gl
+         LEFT JOIN grocery_list_items gli ON gl.id = gli.grocery_list_id
+         WHERE gl.id = $1
+         GROUP BY gl.id`,
+        [groceryListId]
+      );
+
+      await client.query('COMMIT');
+
+      const row = result.rows[0];
+      const groceryList = {
+        id: row.id,
+        householdId: row.household_id,
+        createdAt: row.created_at,
+        isActive: row.is_active,
+        items: row.items,
+      };
+
+      res.status(201).json({ groceryList });
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    console.error('Error generating grocery list from calendar:', error);
+    res.status(500).json({ error: 'Failed to generate grocery list from calendar' });
   }
 });
 
