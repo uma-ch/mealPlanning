@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { mkdirSync } from 'fs';
 import recipeRoutes from './routes/recipes.js';
 import calendarRoutes from './routes/calendar.js';
 import groceryRoutes from './routes/grocery.js';
@@ -17,6 +18,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
+
+// Ensure temp-uploads directory exists
+const tempUploadsDir = path.join(__dirname, '../temp-uploads');
+mkdirSync(tempUploadsDir, { recursive: true });
 
 const app = express();
 const httpServer = createServer(app);
