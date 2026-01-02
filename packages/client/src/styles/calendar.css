@@ -1,0 +1,388 @@
+/* Calendar Page Layout */
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+/* Calendar Header */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e0e0e0;
+  background: white;
+}
+
+.calendar-header .header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.calendar-header h1 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.week-display {
+  font-size: 1rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.header-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-nav {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-nav:hover {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+/* Two-column Layout */
+.calendar-content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Recipe Sidebar */
+.recipe-sidebar {
+  width: 320px;
+  border-right: 1px solid #e0e0e0;
+  overflow-y: auto;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sidebar-header h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.recipes-list {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Draggable Recipe Card */
+.draggable-recipe-card {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: grab;
+  transition: all 0.2s;
+}
+
+.draggable-recipe-card:hover {
+  border-color: #1976d2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.draggable-recipe-card:active {
+  cursor: grabbing;
+}
+
+.draggable-recipe-card.dragging {
+  opacity: 0.5;
+}
+
+.draggable-recipe-card .recipe-thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.draggable-recipe-card .recipe-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.draggable-recipe-card h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.draggable-recipe-card .recipe-tags {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.draggable-recipe-card .tag {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 12px;
+}
+
+/* Week View */
+.week-view {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: #f5f5f5;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1rem;
+}
+
+/* Day Cell */
+.day-cell {
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  min-height: 200px;
+  padding: 0.75rem;
+  background: white;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-cell.drop-target {
+  background: #e3f2fd;
+  border-color: #1976d2;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+
+.day-cell.today {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.day-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.day-number {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.day-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-day {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 0.875rem;
+  text-align: center;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+/* Calendar Recipe Card */
+.calendar-recipe-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0.5rem;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.calendar-recipe-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-recipe-card .recipe-image {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-recipe-card .recipe-title {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.calendar-recipe-card .remove-btn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.calendar-recipe-card .remove-btn:hover {
+  background: #d32f2f;
+}
+
+/* Drag Overlay */
+.drag-overlay-card {
+  background: white;
+  border: 2px solid #1976d2;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.drag-overlay-card img {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.drag-overlay-card span {
+  font-weight: 600;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .calendar-content-wrapper {
+    flex-direction: column;
+  }
+
+  .recipe-sidebar {
+    width: 100%;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .week-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .calendar-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .header-controls {
+    justify-content: center;
+  }
+
+  .week-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-sidebar {
+    max-height: 150px;
+  }
+}
+
+/* Loading & Error States */
+.loading,
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1rem;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+  padding: 1rem;
+  border-radius: 4px;
+  margin: 1rem 2rem;
+  border: 1px solid #ef9a9a;
+}
