@@ -330,7 +330,7 @@ function extractTags(schema: any): string[] {
 /**
  * Extract recipe using Claude AI as fallback
  */
-async function extractWithClaude(html: string, _url: string): Promise<RecipeData> {
+export async function extractWithClaude(html: string, _url: string): Promise<RecipeData> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (!apiKey) {

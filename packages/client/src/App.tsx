@@ -4,6 +4,7 @@ import { HouseholdProvider } from './contexts/HouseholdContext';
 import RecipesPage from './pages/RecipesPage';
 import CalendarPage from './pages/CalendarPage';
 import GroceryListPage from './pages/GroceryListPage';
+import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
 import Layout from './components/Layout';
 
@@ -19,6 +20,7 @@ function App() {
               <Route path="recipes" element={<RecipesPage />} />
               <Route path="calendar" element={<CalendarPage />} />
               <Route path="grocery-list" element={<GroceryListPage />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

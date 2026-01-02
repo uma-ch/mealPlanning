@@ -170,3 +170,23 @@ export interface PaginatedResponse<T> {
   page: number;
   pageSize: number;
 }
+
+// API Keys
+export interface ApiKey {
+  id: string;
+  userId: string;
+  keyPrefix: string;
+  name: string;
+  lastUsedAt: Date | null;
+  createdAt: Date;
+  isActive: boolean;
+}
+
+export interface CreateApiKeyRequest {
+  name: string;
+}
+
+export interface CreateApiKeyResponse {
+  apiKey: ApiKey;
+  key: string; // Full key - only shown once!
+}

@@ -12,6 +12,7 @@ import groceryRoutes from './routes/grocery.js';
 import authRoutes from './routes/auth.js';
 import householdRoutes from './routes/household.js';
 import extensionRoutes from './routes/extension.js';
+import apiKeysRoutes from './routes/apiKeys.js';
 import { setupSocketHandlers } from './socket/handlers.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -51,6 +52,7 @@ app.use('/api/calendar', calendarRoutes);
 app.use('/api/grocery', groceryRoutes);
 app.use('/api/household', householdRoutes);
 app.use('/api/extension', extensionRoutes);
+app.use('/api/api-keys', apiKeysRoutes);
 
 // Serve static files from client build in production
 const clientDistPath = path.join(__dirname, '../../client/dist');

@@ -4,7 +4,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 // Handle messages from content script or popup
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((_request, _sender, _sendResponse) => {
   // Handle any background tasks here
   return true;
 });

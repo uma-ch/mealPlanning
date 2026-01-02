@@ -3,7 +3,7 @@ export function extractRecipeData() {
   // Look for Schema.org Recipe JSON-LD
   const scripts = document.querySelectorAll('script[type="application/ld+json"]');
 
-  for (const script of scripts) {
+  for (const script of Array.from(scripts)) {
     try {
       const data = JSON.parse(script.textContent || '');
       if (data['@type'] === 'Recipe' || (Array.isArray(data) && data.some(item => item['@type'] === 'Recipe'))) {
@@ -42,7 +42,7 @@ function extractInstructions(instructions: any): string {
 }
 
 // Listen for messages from popup
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.action === 'extract') {
     const data = extractRecipeData();
     sendResponse({ success: true, data });
