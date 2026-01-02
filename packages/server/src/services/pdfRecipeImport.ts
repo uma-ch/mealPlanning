@@ -1,7 +1,10 @@
-import pdfParse from 'pdf-parse';
 import { readFile } from 'fs/promises';
 import Anthropic from '@anthropic-ai/sdk';
 import { RecipeImportError } from './recipeImport.js';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse');
 
 interface ExtractedRecipe {
   title: string;
