@@ -9,7 +9,7 @@ const router = Router();
  * GET /api/api-keys
  * List all API keys for the current user
  */
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
   try {
     // TODO: Replace with actual user ID from session/auth
     // Using the same pattern as other routes in the codebase
