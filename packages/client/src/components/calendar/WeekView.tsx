@@ -18,7 +18,9 @@ export default function WeekView({ weekStart, entries, onRemoveRecipe }: WeekVie
   // Create a map of entries by date for quick lookup
   const entryByDate = useMemo(() => {
     return entries.reduce((acc, entry) => {
-      acc[entry.date] = entry;
+      // Normalize date to YYYY-MM-DD format (strip time if present)
+      const dateKey = entry.date.split('T')[0];
+      acc[dateKey] = entry;
       return acc;
     }, {} as Record<string, CalendarEntry>);
   }, [entries]);

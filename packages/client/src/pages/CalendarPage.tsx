@@ -109,7 +109,7 @@ export default function CalendarPage() {
 
     setCalendarEntries((prev) => {
       // Remove any existing entry for this date (one per day)
-      const filtered = prev.filter((e) => e.date !== date);
+      const filtered = prev.filter((e) => e.date.split('T')[0] !== date);
       return [...filtered, optimisticEntry];
     });
 
@@ -127,7 +127,7 @@ export default function CalendarPage() {
 
       // Replace optimistic entry with real one
       setCalendarEntries((prev) =>
-        prev.map((e) => (e.date === date ? entry : e))
+        prev.map((e) => (e.date.split('T')[0] === date ? entry : e))
       );
     } catch (err) {
       console.error('Error adding recipe:', err);
