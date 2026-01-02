@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { formatDateISO } from '../../utils/dateHelpers';
 
 interface GroceryListModalProps {
   onClose: () => void;
