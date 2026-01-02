@@ -7,12 +7,12 @@ const __dirname = path.dirname(__filename);
 
 // Configure multer for temporary file storage
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (_req, _file, cb) => {
     // Use temp-uploads directory
     const tempDir = path.join(__dirname, '../../temp-uploads');
     cb(null, tempDir);
   },
-  filename: (req, file, cb) => {
+  filename: (_req, file, cb) => {
     // Generate unique filename: timestamp-randomid-original.pdf
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
     cb(null, `${uniqueSuffix}-${file.originalname}`);
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 });
 
 // File filter - only accept PDFs
-const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   if (file.mimetype === 'application/pdf') {
     cb(null, true);
   } else {
