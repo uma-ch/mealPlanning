@@ -109,14 +109,6 @@ export default function RecipesPage() {
     });
   };
 
-  const handleSelectAll = () => {
-    setSelectedRecipeIds(new Set(recipes.map(r => r.id)));
-  };
-
-  const handleDeselectAll = () => {
-    setSelectedRecipeIds(new Set());
-  };
-
   const handleGenerateGroceryList = async () => {
     if (selectedRecipeIds.size === 0) return;
 
@@ -207,19 +199,11 @@ export default function RecipesPage() {
       <div className="recipes-header">
         <div className="header-left">
           <h1>My Recipes</h1>
-          {recipes.length > 0 && (
+          {selectedRecipeIds.size > 0 && (
             <div className="selection-controls">
-              <button onClick={handleSelectAll} className="btn-text">
-                Select All
-              </button>
-              <button onClick={handleDeselectAll} className="btn-text">
-                Deselect All
-              </button>
-              {selectedRecipeIds.size > 0 && (
-                <span className="selection-count">
-                  {selectedRecipeIds.size} selected
-                </span>
-              )}
+              <span className="selection-count">
+                {selectedRecipeIds.size} selected
+              </span>
             </div>
           )}
         </div>
