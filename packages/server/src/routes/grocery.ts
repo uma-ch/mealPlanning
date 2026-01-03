@@ -93,18 +93,24 @@ router.post('/generate', async (req, res) => {
     try {
       await client.query('BEGIN');
 
-      // Deactivate previous grocery lists
-      await client.query(
-        'UPDATE grocery_lists SET is_active = false WHERE household_id = $1',
+      // Get or create active grocery list
+      let groceryListId: string;
+      const existingList = await client.query(
+        'SELECT id FROM grocery_lists WHERE household_id = $1 AND is_active = true LIMIT 1',
         [householdId]
       );
 
-      // Create new grocery list
-      const listResult = await client.query(
-        'INSERT INTO grocery_lists (household_id, is_active) VALUES ($1, true) RETURNING id',
-        [householdId]
-      );
-      const groceryListId = listResult.rows[0].id;
+      if (existingList.rows.length > 0) {
+        // Use existing active list (append mode)
+        groceryListId = existingList.rows[0].id;
+      } else {
+        // Create new grocery list if none exists
+        const listResult = await client.query(
+          'INSERT INTO grocery_lists (household_id, is_active) VALUES ($1, true) RETURNING id',
+          [householdId]
+        );
+        groceryListId = listResult.rows[0].id;
+      }
 
       // Fetch recipes
       const recipesResult = await client.query(
@@ -224,18 +230,24 @@ router.post('/generate-from-calendar', async (req, res) => {
     try {
       await client.query('BEGIN');
 
-      // Deactivate previous grocery lists
-      await client.query(
-        'UPDATE grocery_lists SET is_active = false WHERE household_id = $1',
+      // Get or create active grocery list
+      let groceryListId: string;
+      const existingList = await client.query(
+        'SELECT id FROM grocery_lists WHERE household_id = $1 AND is_active = true LIMIT 1',
         [householdId]
       );
 
-      // Create new grocery list
-      const listResult = await client.query(
-        'INSERT INTO grocery_lists (household_id, is_active) VALUES ($1, true) RETURNING id',
-        [householdId]
-      );
-      const groceryListId = listResult.rows[0].id;
+      if (existingList.rows.length > 0) {
+        // Use existing active list (append mode)
+        groceryListId = existingList.rows[0].id;
+      } else {
+        // Create new grocery list if none exists
+        const listResult = await client.query(
+          'INSERT INTO grocery_lists (household_id, is_active) VALUES ($1, true) RETURNING id',
+          [householdId]
+        );
+        groceryListId = listResult.rows[0].id;
+      }
 
       // Fetch recipes
       const recipesResult = await client.query(
