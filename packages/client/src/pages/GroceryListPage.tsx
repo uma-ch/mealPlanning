@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { DndContext, DragEndEvent, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { GroceryList, GroceryListItem, GroceryCategory } from '@recipe-planner/shared';
 import { API_URL } from '../config';
-import GroceryItem from '../components/GroceryItem';
+import DroppableCategorySection from '../components/DroppableCategorySection';
 import AddManualItemForm from '../components/AddManualItemForm';
 
 export default function GroceryListPage() {
@@ -97,6 +98,53 @@ export default function GroceryListPage() {
     }
   };
 
+  const handleCategoryChange = async (itemId: string, newCategory: GroceryCategory) => {
+    try {
+      const response = await fetch(`${API_URL}/grocery/items/${itemId}/category`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category: newCategory }),
+      });
+
+      if (!response.ok) throw new Error('Failed to update category');
+
+      // Optimistically update the UI
+      setGroceryList(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          items: prev.items.map(item =>
+            item.id === itemId ? { ...item, category: newCategory } : item
+          ),
+        };
+      });
+    } catch (err) {
+      console.error('Error updating category:', err);
+      alert('Failed to update category');
+    }
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const itemId = active.id as string;
+    const newCategory = over.id as GroceryCategory;
+    const item = groceryList?.items.find(i => i.id === itemId);
+
+    if (item && item.category !== newCategory) {
+      handleCategoryChange(itemId, newCategory);
+    }
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Require 8px movement before dragging starts
+      },
+    })
+  );
+
   if (loading) {
     return (
       <div className="grocery-list-page">
@@ -179,25 +227,18 @@ export default function GroceryListPage() {
           <p>Your grocery list is empty. Add items manually or generate from recipes.</p>
         </div>
       ) : (
-        <div className="grocery-categories">
-          {sortedCategories.map((category) => (
-            <div key={category} className="category-section">
-              <div className="category-header">
-                <span>{category}</span>
-                <span className="category-count">{groupedItems[category].length}</span>
-              </div>
-              <div className="category-items">
-                {groupedItems[category].map((item) => (
-                  <GroceryItem
-                    key={item.id}
-                    item={item}
-                    onToggle={(isChecked) => handleToggleItem(item.id, isChecked)}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+          <div className="grocery-categories">
+            {sortedCategories.map((category) => (
+              <DroppableCategorySection
+                key={category}
+                category={category}
+                items={groupedItems[category]}
+                onToggleItem={handleToggleItem}
+              />
+            ))}
+          </div>
+        </DndContext>
       )}
     </div>
   );

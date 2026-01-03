@@ -448,4 +448,33 @@ router.delete('/', async (_req, res) => {
   }
 });
 
+/**
+ * PATCH /api/grocery/items/:id/category
+ * Update the category of a grocery list item
+ */
+router.patch('/items/:id/category', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { category } = req.body;
+
+    if (!category || !Object.values(GroceryCategory).includes(category as GroceryCategory)) {
+      return res.status(400).json({ error: 'Invalid category' });
+    }
+
+    const result = await pool.query(
+      'UPDATE grocery_list_items SET category = $1 WHERE id = $2 RETURNING *',
+      [category, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json({ item: result.rows[0] });
+  } catch (error) {
+    console.error('Error updating item category:', error);
+    res.status(500).json({ error: 'Failed to update item category' });
+  }
+});
+
 export default router;

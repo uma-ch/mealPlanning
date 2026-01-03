@@ -273,3 +273,18 @@
     padding: 0.75rem 1rem;
   }
 }
+
+/* Drag and Drop Styles */
+.grocery-item.dragging {
+  cursor: grabbing;
+}
+
+.category-section.drop-target {
+  background-color: #f0f8ff;
+  border: 2px dashed #007bff;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+.category-section.drop-target .category-header {
+  background: linear-gradient(135deg, #5a67d8 0%, #6366f1 100%);
+}
