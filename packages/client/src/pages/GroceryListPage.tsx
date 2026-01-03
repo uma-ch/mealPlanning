@@ -137,6 +137,55 @@ export default function GroceryListPage() {
     }
   };
 
+  const handleExportToAppleNotes = () => {
+    if (!groceryList || groceryList.items.length === 0) return;
+
+    // Group items by category
+    const groupedItems = groceryList.items.reduce((acc, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = [];
+      }
+      acc[item.category].push(item);
+      return acc;
+    }, {} as Record<string, GroceryListItem[]>);
+
+    // Category order
+    const categoryOrder = [
+      GroceryCategory.PRODUCE,
+      GroceryCategory.MEAT_SEAFOOD,
+      GroceryCategory.DAIRY,
+      GroceryCategory.BAKERY,
+      GroceryCategory.PANTRY,
+      GroceryCategory.FROZEN,
+      GroceryCategory.OTHER,
+    ];
+
+    // Build formatted text for Apple Notes
+    let exportText = 'Shopping List\n\n';
+
+    categoryOrder.forEach(category => {
+      if (groupedItems[category] && groupedItems[category].length > 0) {
+        exportText += `${category}\n`;
+        groupedItems[category].forEach(item => {
+          // Use markdown checkbox format that Apple Notes supports
+          const checkbox = item.isChecked ? '- [x]' : '- [ ]';
+          exportText += `${checkbox} ${item.ingredientText}\n`;
+        });
+        exportText += '\n';
+      }
+    });
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(exportText).then(
+      () => {
+        alert('✅ Grocery list copied to clipboard!\n\nYou can now paste it into Apple Notes.');
+      },
+      () => {
+        alert('Failed to copy to clipboard. Please try again.');
+      }
+    );
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -205,6 +254,12 @@ export default function GroceryListPage() {
             onClick={() => setShowAddForm(!showAddForm)}
           >
             {showAddForm ? 'Cancel' : '+ Add Item'}
+          </button>
+          <button
+            className="btn-primary"
+            onClick={handleExportToAppleNotes}
+          >
+            📋 Export to Notes
           </button>
           <button
             className="btn-danger"
