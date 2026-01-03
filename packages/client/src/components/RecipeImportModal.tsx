@@ -5,11 +5,12 @@ interface RecipeImportModalProps {
   onImportPdf: (file: File) => Promise<{ totalSaved: number; totalExtracted: number }>;
   onClose: () => void;
   initialTab?: 'url' | 'pdf';
+  showTabs?: boolean;
 }
 
 type TabType = 'url' | 'pdf';
 
-export default function RecipeImportModal({ onImport, onImportPdf, onClose, initialTab = 'url' }: RecipeImportModalProps) {
+export default function RecipeImportModal({ onImport, onImportPdf, onClose, initialTab = 'url', showTabs = true }: RecipeImportModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [url, setUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -122,33 +123,42 @@ export default function RecipeImportModal({ onImport, onImportPdf, onClose, init
     }
   };
 
+  const getModalTitle = () => {
+    if (!showTabs) {
+      return activeTab === 'url' ? 'Import from URL' : 'Import from PDF';
+    }
+    return 'Import Recipe';
+  };
+
   return (
     <div className="recipe-import-modal" onClick={handleOverlayClick}>
       <div className="import-modal-content">
         <div className="modal-header">
-          <h2>Import Recipe</h2>
+          <h2>{getModalTitle()}</h2>
           <button className="close-btn" onClick={onClose} type="button">
             &times;
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="import-tabs">
-          <button
-            className={`import-tab ${activeTab === 'url' ? 'active' : ''}`}
-            onClick={() => setActiveTab('url')}
-            type="button"
-          >
-            From URL
-          </button>
-          <button
-            className={`import-tab ${activeTab === 'pdf' ? 'active' : ''}`}
-            onClick={() => setActiveTab('pdf')}
-            type="button"
-          >
-            From PDF
-          </button>
-        </div>
+        {showTabs && (
+          <div className="import-tabs">
+            <button
+              className={`import-tab ${activeTab === 'url' ? 'active' : ''}`}
+              onClick={() => setActiveTab('url')}
+              type="button"
+            >
+              From URL
+            </button>
+            <button
+              className={`import-tab ${activeTab === 'pdf' ? 'active' : ''}`}
+              onClick={() => setActiveTab('pdf')}
+              type="button"
+            >
+              From PDF
+            </button>
+          </div>
+        )}
 
         {/* URL Tab */}
         {activeTab === 'url' && (

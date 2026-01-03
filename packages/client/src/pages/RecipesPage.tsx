@@ -284,6 +284,7 @@ export default function RecipesPage() {
           onImportPdf={handleImportPdf}
           onClose={() => setShowImportModal(false)}
           initialTab={importModalTab}
+          showTabs={false}
         />
       )}
 
