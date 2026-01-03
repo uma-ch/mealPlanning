@@ -393,17 +393,23 @@ router.post('/items', async (req, res) => {
     const data: AddManualItemRequest = validation.data;
     const householdId = '00000000-0000-0000-0000-000000000001';
 
-    // Get active grocery list
+    // Get or create active grocery list
+    let groceryListId: string;
     const listResult = await pool.query(
       'SELECT id FROM grocery_lists WHERE household_id = $1 AND is_active = true LIMIT 1',
       [householdId]
     );
 
     if (listResult.rows.length === 0) {
-      return res.status(404).json({ error: 'No active grocery list found' });
+      // Create new grocery list if none exists
+      const newListResult = await pool.query(
+        'INSERT INTO grocery_lists (household_id, is_active) VALUES ($1, true) RETURNING id',
+        [householdId]
+      );
+      groceryListId = newListResult.rows[0].id;
+    } else {
+      groceryListId = listResult.rows[0].id;
     }
-
-    const groceryListId = listResult.rows[0].id;
 
     // Insert item
     const result = await pool.query(

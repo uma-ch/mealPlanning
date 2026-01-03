@@ -247,9 +247,28 @@ export default function GroceryListPage() {
   if (!groceryList) {
     return (
       <div className="grocery-list-page">
+        <div className="grocery-header">
+          <h1>Grocery List</h1>
+          <div className="grocery-actions">
+            <button
+              className="btn-secondary"
+              onClick={() => setShowAddForm(!showAddForm)}
+            >
+              {showAddForm ? 'Cancel' : '+ Add Item'}
+            </button>
+          </div>
+        </div>
+
+        {showAddForm && (
+          <AddManualItemForm
+            onSubmit={handleAddManualItem}
+            onCancel={() => setShowAddForm(false)}
+          />
+        )}
+
         <div className="empty-grocery-state">
           <h2>No Active Grocery List</h2>
-          <p>Select recipes from the Recipes page and click "Generate Grocery List" to create a new list.</p>
+          <p>Add items manually or select recipes from the Recipes page and click "Generate Grocery List".</p>
         </div>
       </div>
     );
