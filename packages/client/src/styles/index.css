@@ -88,3 +88,40 @@ body {
 .login-page button:hover {
   background-color: #0056b3;
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .main-nav {
+    gap: 0.5rem;
+    padding: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .main-nav a {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .main-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-nav {
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .main-nav a {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    flex: 1;
+    text-align: center;
+    min-width: 70px;
+  }
+
+  .main-content {
+    padding: 0.5rem;
+  }
+}
