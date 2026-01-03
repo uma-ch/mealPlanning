@@ -71,8 +71,7 @@ async function getSettings(): Promise<Settings> {
 
 function getApiUrl(environment: string): string {
   if (environment === 'production') {
-    // TODO: Replace with actual production URL
-    return 'https://your-app.onrender.com';
+    return 'https://recipe-planner-api-fk36.onrender.com';
   }
   return environment;
 }
