@@ -219,7 +219,7 @@ export default function RecipesPage() {
             className="btn-primary"
             onClick={() => setShowImportModal(true)}
           >
-            Import from URL
+            Import Recipe
           </button>
           <button
             className="btn-primary"
