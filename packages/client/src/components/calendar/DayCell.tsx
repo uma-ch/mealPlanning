@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import type { CalendarEntry } from '@recipe-planner/shared';
 import CalendarRecipeCard from './CalendarRecipeCard';
-import { getDayName } from '../../utils/dateHelpers';
+import { getDayName, formatDateISO } from '../../utils/dateHelpers';
 
 interface DayCellProps {
   date: Date;
@@ -12,7 +12,7 @@ interface DayCellProps {
 }
 
 export default function DayCell({ date, entry, onRemoveRecipe, onClickToAddRecipe, isToday }: DayCellProps) {
-  const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD
+  const dateString = formatDateISO(date); // YYYY-MM-DD in local timezone
 
   const { setNodeRef, isOver } = useDroppable({
     id: dateString,
