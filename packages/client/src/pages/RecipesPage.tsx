@@ -5,17 +5,20 @@ import RecipeCard from '../components/RecipeCard';
 import RecipeForm from '../components/RecipeForm';
 import RecipeDetail from '../components/RecipeDetail';
 import RecipeImportModal from '../components/RecipeImportModal';
+import RecipeAddModal from '../components/RecipeAddModal';
 
 export default function RecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showAddOptions, setShowAddOptions] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingRecipe, setEditingRecipe] = useState<Recipe | null>(null);
   const [viewingRecipe, setViewingRecipe] = useState<Recipe | null>(null);
   const [selectedRecipeIds, setSelectedRecipeIds] = useState<Set<string>>(new Set());
   const [generatingList, setGeneratingList] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [importModalTab, setImportModalTab] = useState<'url' | 'pdf'>('url');
 
   const fetchRecipes = async () => {
     try {
@@ -217,13 +220,7 @@ export default function RecipesPage() {
           </button>
           <button
             className="btn-primary"
-            onClick={() => setShowImportModal(true)}
-          >
-            Import Recipe
-          </button>
-          <button
-            className="btn-primary"
-            onClick={() => setShowForm(true)}
+            onClick={() => setShowAddOptions(true)}
           >
             + Add Recipe
           </button>
@@ -231,6 +228,26 @@ export default function RecipesPage() {
       </div>
 
       {error && <div className="error-message">{error}</div>}
+
+      {showAddOptions && (
+        <RecipeAddModal
+          onClose={() => setShowAddOptions(false)}
+          onImportUrl={() => {
+            setShowAddOptions(false);
+            setImportModalTab('url');
+            setShowImportModal(true);
+          }}
+          onImportPdf={() => {
+            setShowAddOptions(false);
+            setImportModalTab('pdf');
+            setShowImportModal(true);
+          }}
+          onAddManual={() => {
+            setShowAddOptions(false);
+            setShowForm(true);
+          }}
+        />
+      )}
 
       {viewingRecipe && (
         <RecipeDetail
@@ -266,6 +283,7 @@ export default function RecipesPage() {
           onImport={handleImportRecipe}
           onImportPdf={handleImportPdf}
           onClose={() => setShowImportModal(false)}
+          initialTab={importModalTab}
         />
       )}
 

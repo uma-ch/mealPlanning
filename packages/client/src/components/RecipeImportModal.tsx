@@ -4,12 +4,13 @@ interface RecipeImportModalProps {
   onImport: (url: string) => Promise<void>;
   onImportPdf: (file: File) => Promise<{ totalSaved: number; totalExtracted: number }>;
   onClose: () => void;
+  initialTab?: 'url' | 'pdf';
 }
 
 type TabType = 'url' | 'pdf';
 
-export default function RecipeImportModal({ onImport, onImportPdf, onClose }: RecipeImportModalProps) {
-  const [activeTab, setActiveTab] = useState<TabType>('url');
+export default function RecipeImportModal({ onImport, onImportPdf, onClose, initialTab = 'url' }: RecipeImportModalProps) {
+  const [activeTab, setActiveTab] = useState<TabType>(initialTab);
   const [url, setUrl] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
