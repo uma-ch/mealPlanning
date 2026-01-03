@@ -477,4 +477,28 @@ router.patch('/items/:id/category', async (req, res) => {
   }
 });
 
+/**
+ * DELETE /api/grocery/items/:id
+ * Delete a specific grocery list item
+ */
+router.delete('/items/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await pool.query(
+      'DELETE FROM grocery_list_items WHERE id = $1 RETURNING id',
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json({ message: 'Item deleted successfully', id: result.rows[0].id });
+  } catch (error) {
+    console.error('Error deleting item:', error);
+    res.status(500).json({ error: 'Failed to delete item' });
+  }
+});
+
 export default router;

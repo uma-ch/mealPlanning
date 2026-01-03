@@ -63,6 +63,30 @@ export default function GroceryListPage() {
     }
   };
 
+  const handleDeleteItem = async (itemId: string) => {
+    try {
+      const response = await fetch(`${API_URL}/grocery/items/${itemId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete item');
+
+      // Optimistically update the UI
+      setGroceryList(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          items: prev.items.filter(item => item.id !== itemId),
+        };
+      });
+    } catch (err) {
+      console.error('Error deleting item:', err);
+      alert('Failed to delete item');
+      // Refresh to get correct state
+      fetchGroceryList();
+    }
+  };
+
   const handleAddManualItem = async (ingredientText: string, category: GroceryCategory) => {
     try {
       const response = await fetch(`${API_URL}/grocery/items`, {
@@ -290,6 +314,7 @@ export default function GroceryListPage() {
                 category={category}
                 items={groupedItems[category]}
                 onToggleItem={handleToggleItem}
+                onDeleteItem={handleDeleteItem}
               />
             ))}
           </div>

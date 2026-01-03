@@ -6,12 +6,14 @@ interface DroppableCategorySectionProps {
   category: GroceryCategory;
   items: GroceryListItem[];
   onToggleItem: (itemId: string, isChecked: boolean) => void;
+  onDeleteItem: (itemId: string) => void;
 }
 
 export default function DroppableCategorySection({
   category,
   items,
   onToggleItem,
+  onDeleteItem,
 }: DroppableCategorySectionProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: category,
@@ -34,6 +36,7 @@ export default function DroppableCategorySection({
             key={item.id}
             item={item}
             onToggle={(isChecked) => onToggleItem(item.id, isChecked)}
+            onDelete={onDeleteItem}
           />
         ))}
       </div>
