@@ -116,8 +116,8 @@ router.post('/generate', async (req, res) => {
       const items: Array<{ recipeId: string; text: string; category: GroceryCategory }> = [];
 
       for (const recipe of recipesResult.rows) {
-        // Split ingredients by newline or comma
-        const ingredientLines = recipe.ingredients.split(/\n|,/).map((line: string) => line.trim()).filter(Boolean);
+        // Split ingredients by newline only
+        const ingredientLines = recipe.ingredients.split('\n').map((line: string) => line.trim()).filter(Boolean);
 
         for (const line of ingredientLines) {
           const category = categorizeIngredient(line);
@@ -247,8 +247,8 @@ router.post('/generate-from-calendar', async (req, res) => {
       const items: Array<{ recipeId: string; text: string; category: GroceryCategory }> = [];
 
       for (const recipe of recipesResult.rows) {
-        // Split ingredients by newline or comma
-        const ingredientLines = recipe.ingredients.split(/\n|,/).map((line: string) => line.trim()).filter(Boolean);
+        // Split ingredients by newline only
+        const ingredientLines = recipe.ingredients.split('\n').map((line: string) => line.trim()).filter(Boolean);
 
         for (const line of ingredientLines) {
           const category = categorizeIngredient(line);
