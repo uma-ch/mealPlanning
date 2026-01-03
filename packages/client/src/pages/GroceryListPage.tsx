@@ -4,6 +4,7 @@ import { GroceryList, GroceryListItem, GroceryCategory } from '@recipe-planner/s
 import { API_URL } from '../config';
 import DroppableCategorySection from '../components/DroppableCategorySection';
 import AddManualItemForm from '../components/AddManualItemForm';
+import { getIngredientSortKey } from '../utils/ingredientGrouping';
 
 export default function GroceryListPage() {
   const [groceryList, setGroceryList] = useState<GroceryList | null>(null);
@@ -173,6 +174,15 @@ export default function GroceryListPage() {
       return acc;
     }, {} as Record<string, GroceryListItem[]>);
 
+    // Sort items within each category by normalized ingredient name
+    Object.keys(groupedItems).forEach(category => {
+      groupedItems[category].sort((a, b) => {
+        const sortKeyA = getIngredientSortKey(a.ingredientText);
+        const sortKeyB = getIngredientSortKey(b.ingredientText);
+        return sortKeyA.localeCompare(sortKeyB);
+      });
+    });
+
     // Category order
     const categoryOrder = [
       GroceryCategory.PRODUCE,
@@ -245,7 +255,7 @@ export default function GroceryListPage() {
     );
   }
 
-  // Group items by category
+  // Group items by category and sort by normalized ingredient name
   const groupedItems = groceryList.items.reduce((acc, item) => {
     if (!acc[item.category]) {
       acc[item.category] = [];
@@ -253,6 +263,16 @@ export default function GroceryListPage() {
     acc[item.category].push(item);
     return acc;
   }, {} as Record<string, GroceryListItem[]>);
+
+  // Sort items within each category by normalized ingredient name
+  // This groups similar items together (e.g., "1 clove garlic" and "2 cloves garlic")
+  Object.keys(groupedItems).forEach(category => {
+    groupedItems[category].sort((a, b) => {
+      const sortKeyA = getIngredientSortKey(a.ingredientText);
+      const sortKeyB = getIngredientSortKey(b.ingredientText);
+      return sortKeyA.localeCompare(sortKeyB);
+    });
+  });
 
   // Define category order
   const categoryOrder = [
