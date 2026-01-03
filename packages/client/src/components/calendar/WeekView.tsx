@@ -7,9 +7,10 @@ interface WeekViewProps {
   weekStart: Date;
   entries: CalendarEntry[];
   onRemoveRecipe: (entryId: string) => void;
+  onClickToAddRecipe?: (date: string) => void;
 }
 
-export default function WeekView({ weekStart, entries, onRemoveRecipe }: WeekViewProps) {
+export default function WeekView({ weekStart, entries, onRemoveRecipe, onClickToAddRecipe }: WeekViewProps) {
   // Generate 7 days starting from weekStart
   const weekDays = useMemo(() => {
     return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
@@ -36,6 +37,7 @@ export default function WeekView({ weekStart, entries, onRemoveRecipe }: WeekVie
               date={day}
               entry={entryByDate[dateKey]}
               onRemoveRecipe={onRemoveRecipe}
+              onClickToAddRecipe={onClickToAddRecipe}
               isToday={isToday(day)}
             />
           );

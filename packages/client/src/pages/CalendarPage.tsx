@@ -15,6 +15,7 @@ import CalendarHeader from '../components/calendar/CalendarHeader';
 import RecipeSidebar from '../components/calendar/RecipeSidebar';
 import WeekView from '../components/calendar/WeekView';
 import GroceryListModal from '../components/calendar/GroceryListModal';
+import RecipeSelectionModal from '../components/calendar/RecipeSelectionModal';
 import { getWeekStart, addDays, formatDateISO } from '../utils/dateHelpers';
 import '../styles/calendar.css';
 
@@ -28,6 +29,8 @@ export default function CalendarPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeRecipe, setActiveRecipe] = useState<Recipe | null>(null);
   const [showGroceryModal, setShowGroceryModal] = useState(false);
+  const [showRecipeSelectionModal, setShowRecipeSelectionModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // Drag-and-drop sensors
   const sensors = useSensors(
@@ -160,6 +163,11 @@ export default function CalendarPage() {
     }
   };
 
+  const handleClickToAddRecipe = (date: string) => {
+    setSelectedDate(date);
+    setShowRecipeSelectionModal(true);
+  };
+
   const navigateWeek = (direction: 'prev' | 'next') => {
     setCurrentWeekStart((prev) => addDays(prev, direction === 'next' ? 7 : -7));
   };
@@ -242,6 +250,7 @@ export default function CalendarPage() {
             weekStart={currentWeekStart}
             entries={calendarEntries}
             onRemoveRecipe={handleRemoveRecipeFromDay}
+            onClickToAddRecipe={handleClickToAddRecipe}
           />
         </div>
 
@@ -262,6 +271,18 @@ export default function CalendarPage() {
             onGenerate={handleGenerateGroceryList}
             defaultStartDate={weekDateRange.start}
             defaultEndDate={weekDateRange.end}
+          />
+        )}
+
+        {showRecipeSelectionModal && selectedDate && (
+          <RecipeSelectionModal
+            date={selectedDate}
+            recipes={recipes}
+            onSelectRecipe={handleAddRecipeToDay}
+            onClose={() => {
+              setShowRecipeSelectionModal(false);
+              setSelectedDate(null);
+            }}
           />
         )}
       </div>

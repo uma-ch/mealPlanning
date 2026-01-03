@@ -7,16 +7,23 @@ interface DayCellProps {
   date: Date;
   entry?: CalendarEntry;
   onRemoveRecipe: (entryId: string) => void;
+  onClickToAddRecipe?: (date: string) => void;
   isToday: boolean;
 }
 
-export default function DayCell({ date, entry, onRemoveRecipe, isToday }: DayCellProps) {
+export default function DayCell({ date, entry, onRemoveRecipe, onClickToAddRecipe, isToday }: DayCellProps) {
   const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD
 
   const { setNodeRef, isOver } = useDroppable({
     id: dateString,
     data: { date: dateString },
   });
+
+  const handleClick = () => {
+    if (!entry && onClickToAddRecipe) {
+      onClickToAddRecipe(dateString);
+    }
+  };
 
   return (
     <div
@@ -28,11 +35,11 @@ export default function DayCell({ date, entry, onRemoveRecipe, isToday }: DayCel
         <span className="day-number">{date.getDate()}</span>
       </div>
 
-      <div className="day-content">
+      <div className="day-content" onClick={handleClick}>
         {entry ? (
           <CalendarRecipeCard entry={entry} onRemove={onRemoveRecipe} />
         ) : (
-          <div className="empty-day">Drop recipe here</div>
+          <div className="empty-day">Click to add recipe</div>
         )}
       </div>
     </div>
