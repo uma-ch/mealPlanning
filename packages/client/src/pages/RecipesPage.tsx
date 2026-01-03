@@ -209,14 +209,14 @@ export default function RecipesPage() {
         </div>
         <div className="header-actions">
           <button
-            className="btn-secondary"
+            className="btn-primary"
             onClick={handleGenerateGroceryList}
             disabled={selectedRecipeIds.size === 0 || generatingList}
           >
             {generatingList ? 'Generating...' : `Generate Grocery List (${selectedRecipeIds.size})`}
           </button>
           <button
-            className="btn-secondary"
+            className="btn-primary"
             onClick={() => setShowImportModal(true)}
           >
             Import from URL
