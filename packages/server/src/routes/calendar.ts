@@ -4,8 +4,6 @@ import type { CreateCalendarEntryRequest, CalendarEntry } from '@recipe-planner/
 import { z } from 'zod';
 import {
   getCalendarEntries,
-  getCalendarEntryByDate,
-  createCalendarEntry as createCalendarEntryQuery,
   deleteCalendarEntry as deleteCalendarEntryQuery,
 } from '../db/queries.js';
 
