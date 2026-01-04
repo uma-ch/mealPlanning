@@ -105,6 +105,7 @@ export default function CalendarPage() {
       id: 'temp-' + Date.now(),
       householdId: 'temp',
       recipeId,
+      customText: null,
       date,
       createdAt: new Date(),
       recipe,
@@ -139,6 +140,49 @@ export default function CalendarPage() {
         prev.filter((e) => e.id !== optimisticEntry.id)
       );
       alert('Failed to add recipe to calendar');
+    }
+  };
+
+  const handleAddCustomText = async (customText: string, date: string) => {
+    // Optimistic update
+    const optimisticEntry: CalendarEntry = {
+      id: 'temp-' + Date.now(),
+      householdId: 'temp',
+      recipeId: null,
+      customText,
+      date,
+      createdAt: new Date(),
+    };
+
+    setCalendarEntries((prev) => {
+      // Remove any existing entry for this date (one per day)
+      const filtered = prev.filter((e) => e.date.split('T')[0] !== date);
+      return [...filtered, optimisticEntry];
+    });
+
+    try {
+      // Server sync
+      const response = await fetch(`${API_URL}/calendar`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customText, date }),
+      });
+
+      if (!response.ok) throw new Error('Failed to add custom text');
+
+      const { entry } = await response.json();
+
+      // Replace optimistic entry with real one
+      setCalendarEntries((prev) =>
+        prev.map((e) => (e.date.split('T')[0] === date ? entry : e))
+      );
+    } catch (err) {
+      console.error('Error adding custom text:', err);
+      // Rollback optimistic update
+      setCalendarEntries((prev) =>
+        prev.filter((e) => e.id !== optimisticEntry.id)
+      );
+      alert('Failed to add custom text to calendar');
     }
   };
 
@@ -279,6 +323,7 @@ export default function CalendarPage() {
             date={selectedDate}
             recipes={recipes}
             onSelectRecipe={handleAddRecipeToDay}
+            onAddCustomText={handleAddCustomText}
             onClose={() => {
               setShowRecipeSelectionModal(false);
               setSelectedDate(null);

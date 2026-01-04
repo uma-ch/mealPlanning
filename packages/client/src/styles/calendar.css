@@ -278,6 +278,29 @@
   -webkit-box-orient: vertical;
 }
 
+/* Custom Text Entry Card */
+.calendar-recipe-card.custom-text-entry {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-left: 4px solid #667eea;
+}
+
+.calendar-recipe-card.custom-text-entry:hover {
+  background: #e9ecef;
+}
+
+.custom-text-content {
+  padding: 0.5rem 0;
+}
+
+.custom-text {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #495057;
+  font-style: italic;
+}
+
 .calendar-recipe-card .remove-btn {
   position: absolute;
   top: 0.25rem;
@@ -548,4 +571,84 @@
 
 .empty-day:hover {
   color: #667eea;
+}
+
+/* Custom Text Section in Recipe Selection Modal */
+.custom-text-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.custom-text-section label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.custom-text-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.custom-text-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.custom-text-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.custom-text-input-group .btn-primary {
+  padding: 0.75rem 1.5rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.custom-text-input-group .btn-primary:hover:not(:disabled) {
+  background: #5568d3;
+}
+
+.custom-text-input-group .btn-primary:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+}
+
+/* OR Divider */
+.or-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.or-divider span {
+  padding: 0 1rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
 }

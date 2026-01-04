@@ -88,14 +88,16 @@ export interface ExtensionRecipeRequest {
 export interface CalendarEntry {
   id: string;
   householdId: string;
-  recipeId: string;
+  recipeId: string | null;
+  customText: string | null;
   date: string; // ISO date string
   createdAt: Date;
-  recipe?: Recipe; // Populated in responses
+  recipe?: Recipe; // Populated in responses (only if recipeId is set)
 }
 
 export interface CreateCalendarEntryRequest {
-  recipeId: string;
+  recipeId?: string | null;
+  customText?: string | null;
   date: string;
 }
 
