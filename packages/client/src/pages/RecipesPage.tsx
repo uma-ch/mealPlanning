@@ -25,7 +25,9 @@ export default function RecipesPage() {
     try {
       setLoading(true);
       console.log('Fetching recipes from:', `${API_URL}/recipes`);
-      const response = await fetch(`${API_URL}/recipes`);
+      const response = await fetch(`${API_URL}/recipes`, {
+        headers: getAuthHeaders(),
+      });
       console.log('Response status:', response.status);
 
       if (!response.ok) {
@@ -70,7 +72,6 @@ export default function RecipesPage() {
     try {
       const response = await fetch(`${API_URL}/recipes/${id}`, {
         method: 'PUT',
-        headers: getAuthHeaders(),
         headers: getAuthHeaders(),
         body: JSON.stringify(recipeData),
       });

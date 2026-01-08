@@ -14,7 +14,9 @@ export default function SettingsPage() {
 
   const fetchApiKeys = async () => {
     try {
-      const response = await fetch(`${API_URL}/api-keys`);
+      const response = await fetch(`${API_URL}/api-keys`, {
+        headers: getAuthHeaders(),
+      });
       if (!response.ok) throw new Error('Failed to fetch API keys');
 
       const data = await response.json();

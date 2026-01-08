@@ -16,7 +16,9 @@ export default function GroceryListPage() {
   const fetchGroceryList = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_URL}/grocery`);
+      const response = await fetch(`${API_URL}/grocery`, {
+        headers: getAuthHeaders(),
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -41,7 +43,6 @@ export default function GroceryListPage() {
     try {
       const response = await fetch(`${API_URL}/grocery/items/${itemId}`, {
         method: 'PUT',
-        headers: getAuthHeaders(),
         headers: getAuthHeaders(),
         body: JSON.stringify({ isChecked }),
       });

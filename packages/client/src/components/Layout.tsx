@@ -1,24 +1,31 @@
-import { Outlet, NavLink, Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { Outlet, NavLink } from 'react-router-dom';
+import { getUser, removeToken } from '../utils/auth';
+import { useNavigate } from 'react-router-dom';
 
 export default function Layout() {
-  const { user, loading } = useAuth();
+  const user = getUser();
+  const navigate = useNavigate();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
+  const handleLogout = () => {
+    removeToken();
+    navigate('/login');
+  };
 
   return (
     <div className="app-layout">
       <nav className="main-nav">
-        <NavLink to="/recipes">Recipes</NavLink>
-        <NavLink to="/calendar">Calendar</NavLink>
-        <NavLink to="/grocery-list">Grocery List</NavLink>
-        <NavLink to="/settings">Settings</NavLink>
+        <div className="nav-links">
+          <NavLink to="/recipes">Recipes</NavLink>
+          <NavLink to="/calendar">Calendar</NavLink>
+          <NavLink to="/grocery-list">Grocery List</NavLink>
+          <NavLink to="/settings">Settings</NavLink>
+        </div>
+        {user && (
+          <div className="nav-user">
+            <span className="user-email">{user.email}</span>
+            <button onClick={handleLogout} className="logout-btn">Logout</button>
+          </div>
+        )}
       </nav>
       <main className="main-content">
         <Outlet />
