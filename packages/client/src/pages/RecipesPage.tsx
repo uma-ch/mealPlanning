@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Recipe } from '@recipe-planner/shared';
 import { API_URL } from '../config';
+import { getAuthHeaders } from '../utils/auth';
 import RecipeCard from '../components/RecipeCard';
 import RecipeForm from '../components/RecipeForm';
 import RecipeDetail from '../components/RecipeDetail';
@@ -51,7 +52,7 @@ export default function RecipesPage() {
     try {
       const response = await fetch(`${API_URL}/recipes`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify(recipeData),
       });
 
@@ -69,7 +70,8 @@ export default function RecipesPage() {
     try {
       const response = await fetch(`${API_URL}/recipes/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify(recipeData),
       });
 
@@ -89,6 +91,7 @@ export default function RecipesPage() {
     try {
       const response = await fetch(`${API_URL}/recipes/${id}`, {
         method: 'DELETE',
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error('Failed to delete recipe');
@@ -119,7 +122,7 @@ export default function RecipesPage() {
       setGeneratingList(true);
       const response = await fetch(`${API_URL}/grocery/generate`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ recipeIds: Array.from(selectedRecipeIds) }),
       });
 
@@ -139,7 +142,7 @@ export default function RecipesPage() {
     try {
       const response = await fetch(`${API_URL}/recipes/import-url`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ url }),
       });
 

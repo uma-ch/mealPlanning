@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ApiKey, CreateApiKeyResponse } from '@recipe-planner/shared';
 import { API_URL } from '../config';
+import { getAuthHeaders } from '../utils/auth';
 import '../styles/SettingsPage.css';
 
 export default function SettingsPage() {
@@ -41,7 +42,7 @@ export default function SettingsPage() {
     try {
       const response = await fetch(`${API_URL}/api-keys`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ name: newKeyName.trim() }),
       });
 
@@ -68,6 +69,7 @@ export default function SettingsPage() {
     try {
       const response = await fetch(`${API_URL}/api-keys/${id}`, {
         method: 'DELETE',
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error('Failed to revoke API key');

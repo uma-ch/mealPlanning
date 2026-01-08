@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { DndContext, DragEndEvent, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
 import { GroceryList, GroceryListItem, GroceryCategory } from '@recipe-planner/shared';
 import { API_URL } from '../config';
+import { getAuthHeaders } from '../utils/auth';
 import DroppableCategorySection from '../components/DroppableCategorySection';
 import AddManualItemForm from '../components/AddManualItemForm';
 import { getIngredientSortKey } from '../utils/ingredientGrouping';
@@ -40,7 +41,8 @@ export default function GroceryListPage() {
     try {
       const response = await fetch(`${API_URL}/grocery/items/${itemId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
+        headers: getAuthHeaders(),
         body: JSON.stringify({ isChecked }),
       });
 
@@ -68,6 +70,7 @@ export default function GroceryListPage() {
     try {
       const response = await fetch(`${API_URL}/grocery/items/${itemId}`, {
         method: 'DELETE',
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error('Failed to delete item');
@@ -92,7 +95,7 @@ export default function GroceryListPage() {
     try {
       const response = await fetch(`${API_URL}/grocery/items`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ ingredientText, category }),
       });
 
@@ -112,6 +115,7 @@ export default function GroceryListPage() {
     try {
       const response = await fetch(`${API_URL}/grocery`, {
         method: 'DELETE',
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error('Failed to clear list');
@@ -127,7 +131,7 @@ export default function GroceryListPage() {
     try {
       const response = await fetch(`${API_URL}/grocery/items/${itemId}/category`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ category: newCategory }),
       });
 

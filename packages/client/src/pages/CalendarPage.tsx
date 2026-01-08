@@ -11,6 +11,7 @@ import {
 } from '@dnd-kit/core';
 import type { Recipe, CalendarEntry } from '@recipe-planner/shared';
 import { API_URL } from '../config';
+import { getAuthHeaders } from '../utils/auth';
 import CalendarHeader from '../components/calendar/CalendarHeader';
 import RecipeSidebar from '../components/calendar/RecipeSidebar';
 import WeekView from '../components/calendar/WeekView';
@@ -64,7 +65,9 @@ export default function CalendarPage() {
 
   const fetchRecipes = async () => {
     try {
-      const response = await fetch(`${API_URL}/recipes`);
+      const response = await fetch(`${API_URL}/recipes`, {
+        headers: getAuthHeaders(),
+      });
       if (!response.ok) throw new Error('Failed to fetch recipes');
 
       const data = await response.json();
@@ -80,7 +83,8 @@ export default function CalendarPage() {
     try {
       setLoading(true);
       const response = await fetch(
-        `${API_URL}/calendar?startDate=${weekDateRange.start}&endDate=${weekDateRange.end}`
+        `${API_URL}/calendar?startDate=${weekDateRange.start}&endDate=${weekDateRange.end}`,
+        { headers: getAuthHeaders() }
       );
 
       if (!response.ok) throw new Error('Failed to fetch calendar entries');
@@ -121,7 +125,7 @@ export default function CalendarPage() {
       // Server sync
       const response = await fetch(`${API_URL}/calendar`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ recipeId, date }),
       });
 
@@ -164,7 +168,7 @@ export default function CalendarPage() {
       // Server sync
       const response = await fetch(`${API_URL}/calendar`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ customText, date }),
       });
 
@@ -194,6 +198,7 @@ export default function CalendarPage() {
     try {
       const response = await fetch(`${API_URL}/calendar/${entryId}`, {
         method: 'DELETE',
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error('Failed to remove recipe');
@@ -224,7 +229,7 @@ export default function CalendarPage() {
     try {
       const response = await fetch(`${API_URL}/grocery/generate-from-calendar`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ startDate, endDate }),
       });
 
