@@ -102,6 +102,58 @@
   background: #f7fafc;
 }
 
+.login-card .divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: #a0aec0;
+  font-size: 0.875rem;
+}
+
+.login-card .divider::before,
+.login-card .divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.login-card .divider span {
+  padding: 0 1rem;
+  font-weight: 500;
+}
+
+.login-card .btn-google {
+  width: 100%;
+  padding: 0.875rem;
+  background: white;
+  color: #2d3748;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.login-card .btn-google:hover:not(:disabled) {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.login-card .btn-google:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.login-card .btn-google svg {
+  flex-shrink: 0;
+}
+
 .login-card .hint {
   text-align: center;
   color: #718096;

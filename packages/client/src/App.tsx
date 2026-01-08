@@ -5,6 +5,7 @@ import GroceryListPage from './pages/GroceryListPage';
 import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
 import VerifyPage from './pages/VerifyPage';
+import OAuthCallbackPage from './pages/OAuthCallbackPage';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/auth/verify" element={<VerifyPage />} />
+        <Route path="/auth/callback" element={<OAuthCallbackPage />} />
         <Route
           path="/"
           element={

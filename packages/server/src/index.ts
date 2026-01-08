@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { mkdirSync } from 'fs';
+import passport from './config/passport.js';
 import recipeRoutes from './routes/recipes.js';
 import calendarRoutes from './routes/calendar.js';
 import groceryRoutes from './routes/grocery.js';
@@ -39,6 +40,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+app.use(passport.initialize());
 
 // Health check
 app.get('/health', (_req, res) => {

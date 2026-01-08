@@ -4,6 +4,7 @@ import pool from '../db/connection.js';
 import { z } from 'zod';
 import type { MagicLinkRequest, MagicLinkVerify, User } from '@recipe-planner/shared';
 import { sendMagicLinkEmail } from '../utils/email.js';
+import passport from '../config/passport.js';
 
 const router = Router();
 
@@ -176,5 +177,37 @@ router.post('/logout', async (_req, res) => {
   // For JWT-based auth, logout is handled client-side by removing the token
   res.json({ message: 'Logged out successfully' });
 });
+
+// GET /api/auth/google - Initiate Google OAuth
+router.get('/google', passport.authenticate('google', { session: false }));
+
+// GET /api/auth/google/callback - Handle Google OAuth callback
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+  async (req, res) => {
+    try {
+      const user = req.user as any;
+
+      if (!user) {
+        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=auth_failed`);
+      }
+
+      // Generate JWT
+      const jwtToken = jwt.sign(
+        { userId: user.id, householdId: user.household_id, email: user.email },
+        JWT_SECRET,
+        { expiresIn: '30d' }
+      );
+
+      // Redirect to frontend with token in URL
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/auth/callback?token=${jwtToken}`);
+    } catch (error) {
+      console.error('Error in Google OAuth callback:', error);
+      res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=server_error`);
+    }
+  }
+);
 
 export default router;
