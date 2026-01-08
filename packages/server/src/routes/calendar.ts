@@ -6,8 +6,12 @@ import {
   getCalendarEntries,
   deleteCalendarEntry as deleteCalendarEntryQuery,
 } from '../db/queries.js';
+import { authenticateToken, AuthRequest } from '../middleware/auth.js';
 
 const router = Router();
+
+// Apply authentication to all routes
+router.use(authenticateToken);
 
 // Validation schemas
 const createEntrySchema = z.object({
@@ -26,9 +30,9 @@ const dateRangeSchema = z.object({
 
 // GET /api/calendar?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
 // Get calendar entries for date range
-router.get('/', async (req, res) => {
+router.get('/', async (req: AuthRequest, res) => {
   try {
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
 
     // Validate query params
     const validation = dateRangeSchema.safeParse({
@@ -66,7 +70,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/calendar - Add recipe or custom text to calendar
-router.post('/', async (req, res) => {
+router.post('/', async (req: AuthRequest, res) => {
   try {
     const validation = createEntrySchema.safeParse(req.body);
     if (!validation.success) {
@@ -77,7 +81,7 @@ router.post('/', async (req, res) => {
     }
 
     const data: CreateCalendarEntryRequest = validation.data;
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
 
     // If recipe entry, verify recipe exists and belongs to household
     if (data.recipeId) {
@@ -157,10 +161,10 @@ router.post('/', async (req, res) => {
 });
 
 // DELETE /api/calendar/:id - Remove entry from calendar
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
 
     const result = await deleteCalendarEntryQuery(id, householdId);
 

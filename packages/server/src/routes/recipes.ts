@@ -6,8 +6,12 @@ import { fetchRecipeFromUrl, RecipeImportError } from '../services/recipeImport.
 import { pdfUpload } from '../middleware/upload.js';
 import { extractRecipesFromPdf } from '../services/pdfRecipeImport.js';
 import { unlink } from 'fs/promises';
+import { authenticateToken, AuthRequest } from '../middleware/auth.js';
 
 const router = Router();
+
+// Apply authentication to all routes
+router.use(authenticateToken);
 
 // Validation schemas
 const createRecipeSchema = z.object({
@@ -32,10 +36,10 @@ const importRecipeSchema = z.object({
 });
 
 // GET /api/recipes - Get all recipes for household
-router.get('/', async (_req, res) => {
+router.get('/', async (req: AuthRequest, res) => {
   try {
     // For now, using mock household ID from development auth
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
 
     const result = await pool.query(
       `SELECT r.*, COALESCE(json_agg(rt.tag) FILTER (WHERE rt.tag IS NOT NULL), '[]') as tags
@@ -71,7 +75,7 @@ router.get('/', async (_req, res) => {
 });
 
 // POST /api/recipes - Create new recipe
-router.post('/', async (req, res) => {
+router.post('/', async (req: AuthRequest, res) => {
   try {
     const validation = createRecipeSchema.safeParse(req.body);
     if (!validation.success) {
@@ -79,7 +83,7 @@ router.post('/', async (req, res) => {
     }
 
     const data: CreateRecipeRequest = validation.data;
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
     const userId = '00000000-0000-0000-0000-000000000002';
 
     const result = await pool.query(
@@ -136,10 +140,10 @@ router.post('/', async (req, res) => {
 });
 
 // GET /api/recipes/:id - Get recipe by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
 
     const result = await pool.query(
       `SELECT r.*, COALESCE(json_agg(rt.tag) FILTER (WHERE rt.tag IS NOT NULL), '[]') as tags
@@ -179,7 +183,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // PUT /api/recipes/:id - Update recipe
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
     const validation = updateRecipeSchema.safeParse(req.body);
@@ -189,7 +193,7 @@ router.put('/:id', async (req, res) => {
     }
 
     const data: UpdateRecipeRequest = validation.data;
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
 
     // Build dynamic update query
     const updates: string[] = [];
@@ -280,10 +284,10 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /api/recipes/:id - Delete recipe
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
 
     const result = await pool.query(
       'DELETE FROM recipes WHERE id = $1 AND household_id = $2 RETURNING id',
@@ -302,7 +306,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // POST /api/recipes/import-url - Import recipe from URL
-router.post('/import-url', async (req, res) => {
+router.post('/import-url', async (req: AuthRequest, res) => {
   try {
     // Validate request
     const validation = importRecipeSchema.safeParse(req.body);
@@ -314,7 +318,7 @@ router.post('/import-url', async (req, res) => {
     }
 
     const data: ImportRecipeRequest = validation.data;
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
     // Use null for created_by since we don't have real auth yet
     const userId = null;
 
@@ -434,7 +438,7 @@ router.post('/import-url', async (req, res) => {
 });
 
 // POST /api/recipes/import-pdf - Import recipes from PDF
-router.post('/import-pdf', pdfUpload.single('pdf'), async (req, res) => {
+router.post('/import-pdf', pdfUpload.single('pdf'), async (req: AuthRequest, res) => {
   let filePath: string | undefined;
 
   try {
@@ -444,7 +448,7 @@ router.post('/import-pdf', pdfUpload.single('pdf'), async (req, res) => {
     }
 
     filePath = req.file.path;
-    const householdId = '00000000-0000-0000-0000-000000000001';
+    const householdId = req.user!.householdId;
     const userId = null; // No auth yet
 
     // Extract recipes from PDF

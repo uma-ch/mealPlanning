@@ -1,0 +1,135 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+}
+
+.login-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.login-card h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.875rem;
+  color: #1a202c;
+  text-align: center;
+}
+
+.login-card .subtitle {
+  color: #718096;
+  text-align: center;
+  margin: 0 0 2rem 0;
+  font-size: 1rem;
+}
+
+.login-card .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.login-card label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.875rem;
+}
+
+.login-card input[type="email"] {
+  width: 100%;
+  padding: 0.875rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.login-card input[type="email"]:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.login-card input[type="email"]:disabled {
+  background-color: #f7fafc;
+  cursor: not-allowed;
+}
+
+.login-card .btn-primary {
+  width: 100%;
+  padding: 0.875rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-card .btn-primary:hover:not(:disabled) {
+  background: #5568d3;
+}
+
+.login-card .btn-primary:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+}
+
+.login-card .btn-secondary {
+  width: 100%;
+  padding: 0.875rem;
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+}
+
+.login-card .btn-secondary:hover {
+  background: #f7fafc;
+}
+
+.login-card .hint {
+  text-align: center;
+  color: #718096;
+  font-size: 0.875rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+}
+
+.login-card .error-message {
+  background: #fff5f5;
+  color: #c53030;
+  padding: 0.875rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  border: 1px solid #feb2b2;
+}
+
+.login-card p strong {
+  color: #667eea;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .login-card h1 {
+    font-size: 1.5rem;
+  }
+}
