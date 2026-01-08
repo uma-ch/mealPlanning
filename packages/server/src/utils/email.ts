@@ -5,8 +5,11 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 export async function sendMagicLinkEmail(email: string, token: string): Promise<void> {
   const magicLink = `${FRONTEND_URL}/auth/verify?token=${token}`;
 
-  // For development, just log the magic link
-  if (process.env.NODE_ENV !== 'production') {
+  // Check if SMTP is configured
+  const smtpConfigured = process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+
+  // If SMTP not configured, log to console (works in dev and prod)
+  if (!smtpConfigured) {
     console.log('\n========================================');
     console.log('Magic Link for:', email);
     console.log('Link:', magicLink);
@@ -14,7 +17,7 @@ export async function sendMagicLinkEmail(email: string, token: string): Promise<
     return;
   }
 
-  // In production, send actual email
+  // SMTP is configured, send actual email
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT || '587'),
