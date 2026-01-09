@@ -6,14 +6,16 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5001';
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: `${BACKEND_URL}/api/auth/google/callback`,
-      scope: ['profile', 'email'],
-    },
+// Only configure Google OAuth if credentials are provided
+if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: GOOGLE_CLIENT_ID,
+        clientSecret: GOOGLE_CLIENT_SECRET,
+        callbackURL: `${BACKEND_URL}/api/auth/google/callback`,
+        scope: ['profile', 'email'],
+      },
     async (_accessToken, _refreshToken, profile, done) => {
       try {
         const email = profile.emails?.[0]?.value;
@@ -84,5 +86,8 @@ passport.use(
     }
   )
 );
+} else {
+  console.log('Google OAuth not configured - skipping Google strategy initialization');
+}
 
 export default passport;
