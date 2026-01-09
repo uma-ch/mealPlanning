@@ -10,7 +10,7 @@ import { authenticateToken, AuthRequest } from '../middleware/auth.js';
 const router = Router();
 
 // Apply authentication to all routes
-router.use(authenticateToken);
+router.use(authenticateToken as any);
 
 // Validation schemas
 const generateListSchema = z.object({

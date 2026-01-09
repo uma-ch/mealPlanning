@@ -14,7 +14,7 @@ passport.use(
       callbackURL: `${BACKEND_URL}/api/auth/google/callback`,
       scope: ['profile', 'email'],
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (_accessToken, _refreshToken, profile, done) => {
       try {
         const email = profile.emails?.[0]?.value;
         const googleId = profile.id;
