@@ -36,7 +36,7 @@ const importRecipeSchema = z.object({
 });
 
 // GET /api/recipes - Get all recipes for household
-router.get('/', async (req: AuthRequest, res) => {
+router.get('/', async (req: AuthRequest, res) as any => {
   try {
     // For now, using mock household ID from development auth
     const householdId = req.user!.householdId;
@@ -75,7 +75,7 @@ router.get('/', async (req: AuthRequest, res) => {
 });
 
 // POST /api/recipes - Create new recipe
-router.post('/', async (req: AuthRequest, res) => {
+router.post('/', async (req: AuthRequest, res) as any => {
   try {
     const validation = createRecipeSchema.safeParse(req.body);
     if (!validation.success) {
@@ -140,7 +140,7 @@ router.post('/', async (req: AuthRequest, res) => {
 });
 
 // GET /api/recipes/:id - Get recipe by ID
-router.get('/:id', async (req: AuthRequest, res) => {
+router.get('/:id', async (req: AuthRequest, res) as any => {
   try {
     const { id } = req.params;
     const householdId = req.user!.householdId;
@@ -183,7 +183,7 @@ router.get('/:id', async (req: AuthRequest, res) => {
 });
 
 // PUT /api/recipes/:id - Update recipe
-router.put('/:id', async (req: AuthRequest, res) => {
+router.put('/:id', async (req: AuthRequest, res) as any => {
   try {
     const { id } = req.params;
     const validation = updateRecipeSchema.safeParse(req.body);
@@ -284,7 +284,7 @@ router.put('/:id', async (req: AuthRequest, res) => {
 });
 
 // DELETE /api/recipes/:id - Delete recipe
-router.delete('/:id', async (req: AuthRequest, res) => {
+router.delete('/:id', async (req: AuthRequest, res) as any => {
   try {
     const { id } = req.params;
     const householdId = req.user!.householdId;
@@ -306,7 +306,7 @@ router.delete('/:id', async (req: AuthRequest, res) => {
 });
 
 // POST /api/recipes/import-url - Import recipe from URL
-router.post('/import-url', async (req: AuthRequest, res) => {
+router.post('/import-url', async (req: AuthRequest, res) as any => {
   try {
     // Validate request
     const validation = importRecipeSchema.safeParse(req.body);
@@ -438,7 +438,7 @@ router.post('/import-url', async (req: AuthRequest, res) => {
 });
 
 // POST /api/recipes/import-pdf - Import recipes from PDF
-router.post('/import-pdf', pdfUpload.single('pdf'), async (req: AuthRequest, res) => {
+router.post('/import-pdf', pdfUpload.single('pdf'), async (req: AuthRequest, res) as any => {
   let filePath: string | undefined;
 
   try {

@@ -32,7 +32,7 @@ const updateItemSchema = z.object({
 });
 
 // GET /api/grocery - Get active grocery list
-router.get('/', async (req: AuthRequest, res) => {
+router.get('/', async (req: AuthRequest, res) as any => {
   try {
     const householdId = req.user!.householdId;
 
@@ -82,7 +82,7 @@ router.get('/', async (req: AuthRequest, res) => {
 });
 
 // POST /api/grocery/generate - Generate grocery list from recipes
-router.post('/generate', async (req: AuthRequest, res) => {
+router.post('/generate', async (req: AuthRequest, res) as any => {
   try {
     const validation = generateListSchema.safeParse(req.body);
     if (!validation.success) {
@@ -207,7 +207,7 @@ router.post('/generate', async (req: AuthRequest, res) => {
 });
 
 // POST /api/grocery/generate-from-calendar - Generate grocery list from calendar date range
-router.post('/generate-from-calendar', async (req: AuthRequest, res) => {
+router.post('/generate-from-calendar', async (req: AuthRequest, res) as any => {
   try {
     const validation = dateRangeSchema.safeParse(req.body);
     if (!validation.success) {
@@ -344,7 +344,7 @@ router.post('/generate-from-calendar', async (req: AuthRequest, res) => {
 });
 
 // PUT /api/grocery/items/:id - Update grocery list item
-router.put('/items/:id', async (req: AuthRequest, res) => {
+router.put('/items/:id', async (req: AuthRequest, res) as any => {
   try {
     const { id } = req.params;
     const validation = updateItemSchema.safeParse(req.body);
@@ -387,7 +387,7 @@ router.put('/items/:id', async (req: AuthRequest, res) => {
 });
 
 // POST /api/grocery/items - Add manual item
-router.post('/items', async (req: AuthRequest, res) => {
+router.post('/items', async (req: AuthRequest, res) as any => {
   try {
     const validation = addManualItemSchema.safeParse(req.body);
     if (!validation.success) {
@@ -442,7 +442,7 @@ router.post('/items', async (req: AuthRequest, res) => {
 });
 
 // DELETE /api/grocery - Clear/archive active grocery list
-router.delete('/', async (req: AuthRequest, res) => {
+router.delete('/', async (req: AuthRequest, res) as any => {
   try {
     const householdId = req.user!.householdId;
 
@@ -462,7 +462,7 @@ router.delete('/', async (req: AuthRequest, res) => {
  * PATCH /api/grocery/items/:id/category
  * Update the category of a grocery list item
  */
-router.patch('/items/:id/category', async (req: AuthRequest, res) => {
+router.patch('/items/:id/category', async (req: AuthRequest, res) as any => {
   try {
     const { id } = req.params;
     const { category } = req.body;
@@ -491,7 +491,7 @@ router.patch('/items/:id/category', async (req: AuthRequest, res) => {
  * DELETE /api/grocery/items/:id
  * Delete a specific grocery list item
  */
-router.delete('/items/:id', async (req: AuthRequest, res) => {
+router.delete('/items/:id', async (req: AuthRequest, res) as any => {
   try {
     const { id } = req.params;
 

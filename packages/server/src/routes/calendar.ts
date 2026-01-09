@@ -30,7 +30,7 @@ const dateRangeSchema = z.object({
 
 // GET /api/calendar?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD
 // Get calendar entries for date range
-router.get('/', async (req: AuthRequest, res) => {
+router.get('/', async (req: AuthRequest, res) as any => {
   try {
     const householdId = req.user!.householdId;
 
@@ -70,7 +70,7 @@ router.get('/', async (req: AuthRequest, res) => {
 });
 
 // POST /api/calendar - Add recipe or custom text to calendar
-router.post('/', async (req: AuthRequest, res) => {
+router.post('/', async (req: AuthRequest, res) as any => {
   try {
     const validation = createEntrySchema.safeParse(req.body);
     if (!validation.success) {
@@ -161,7 +161,7 @@ router.post('/', async (req: AuthRequest, res) => {
 });
 
 // DELETE /api/calendar/:id - Remove entry from calendar
-router.delete('/:id', async (req: AuthRequest, res) => {
+router.delete('/:id', async (req: AuthRequest, res) as any => {
   try {
     const { id } = req.params;
     const householdId = req.user!.householdId;
