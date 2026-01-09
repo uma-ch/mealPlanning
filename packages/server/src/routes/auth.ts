@@ -193,16 +193,37 @@ router.get(
         return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=auth_failed`);
       }
 
+      // Fetch full user data including createdAt
+      const userData = await pool.query(
+        'SELECT id, email, household_id, created_at FROM users WHERE id = $1',
+        [user.id]
+      );
+
+      if (userData.rows.length === 0) {
+        return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=user_not_found`);
+      }
+
+      const fullUser = userData.rows[0];
+
       // Generate JWT
       const jwtToken = jwt.sign(
-        { userId: user.id, householdId: user.household_id, email: user.email },
+        { userId: fullUser.id, householdId: fullUser.household_id, email: fullUser.email },
         JWT_SECRET,
         { expiresIn: '30d' }
       );
 
-      // Redirect to frontend with token in URL
+      // Encode user data to pass in URL
+      const userJson = JSON.stringify({
+        id: fullUser.id,
+        email: fullUser.email,
+        householdId: fullUser.household_id,
+        createdAt: fullUser.created_at
+      });
+      const encodedUser = encodeURIComponent(userJson);
+
+      // Redirect to frontend with token and user data in URL
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-      res.redirect(`${frontendUrl}/auth/callback?token=${jwtToken}`);
+      res.redirect(`${frontendUrl}/auth/callback?token=${jwtToken}&user=${encodedUser}`);
     } catch (error) {
       console.error('Error in Google OAuth callback:', error);
       res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=server_error`);

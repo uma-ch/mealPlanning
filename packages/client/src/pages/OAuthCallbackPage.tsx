@@ -11,12 +11,15 @@ export default function OAuthCallbackPage() {
 
   useEffect(() => {
     const token = searchParams.get('token');
+    const userParam = searchParams.get('user');
     const error = searchParams.get('error');
 
     if (error) {
       setStatus('error');
       if (error === 'auth_failed') {
         setErrorMessage('Authentication failed. Please try again.');
+      } else if (error === 'user_not_found') {
+        setErrorMessage('User account not found. Please try again.');
       } else {
         setErrorMessage('An error occurred during sign in. Please try again.');
       }
@@ -29,13 +32,28 @@ export default function OAuthCallbackPage() {
       return;
     }
 
-    // Store token
-    setToken(token);
+    if (!userParam) {
+      setStatus('error');
+      setErrorMessage('No user data received.');
+      return;
+    }
 
-    // Redirect to home
-    setTimeout(() => {
-      navigate('/');
-    }, 500);
+    try {
+      // Parse user data from URL
+      const user = JSON.parse(decodeURIComponent(userParam));
+
+      // Store token and user
+      setToken(token);
+      localStorage.setItem('user', JSON.stringify(user));
+
+      // Redirect to home
+      setTimeout(() => {
+        navigate('/');
+      }, 500);
+    } catch (err) {
+      setStatus('error');
+      setErrorMessage('Failed to parse user data.');
+    }
   }, [searchParams, navigate]);
 
   if (status === 'error') {
