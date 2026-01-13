@@ -19,7 +19,7 @@ export async function sendMagicLinkEmail(email: string, token: string): Promise<
   const resend = new Resend(RESEND_API_KEY);
 
   await resend.emails.send({
-    from: 'Recipe Planner <onboarding@resend.dev>', // Use resend.dev domain for testing, or your verified domain
+    from: 'Recipe Planner <email@uma.dev>',
     to: email,
     subject: 'Sign in to Recipe Planner',
     html: `
