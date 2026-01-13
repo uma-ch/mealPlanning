@@ -178,14 +178,16 @@ router.post('/logout', async (_req, res) => {
   res.json({ message: 'Logged out successfully' });
 });
 
-// GET /api/auth/google - Initiate Google OAuth
-router.get('/google', passport.authenticate('google', { session: false }));
+// Google OAuth routes - only register if credentials are configured
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  // GET /api/auth/google - Initiate Google OAuth
+  router.get('/google', passport.authenticate('google', { session: false }));
 
-// GET /api/auth/google/callback - Handle Google OAuth callback
-router.get(
-  '/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
-  async (req, res) => {
+  // GET /api/auth/google/callback - Handle Google OAuth callback
+  router.get(
+    '/google/callback',
+    passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+    async (req, res) => {
     try {
       const user = req.user as any;
 
@@ -230,5 +232,6 @@ router.get(
     }
   }
 );
+}
 
 export default router;
