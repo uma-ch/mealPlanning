@@ -20,6 +20,7 @@ export default function RecipesPage() {
   const [generatingList, setGeneratingList] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [importModalTab, setImportModalTab] = useState<'url' | 'pdf'>('url');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchRecipes = async () => {
     try {
@@ -193,6 +194,18 @@ export default function RecipesPage() {
     }
   };
 
+  // Filter recipes based on search query
+  const filteredRecipes = recipes.filter(recipe => {
+    if (!searchQuery.trim()) return true;
+
+    const query = searchQuery.toLowerCase();
+    const titleMatch = recipe.title.toLowerCase().includes(query);
+    const ingredientsMatch = recipe.ingredients.toLowerCase().includes(query);
+    const tagsMatch = recipe.tags?.some(tag => tag.toLowerCase().includes(query));
+
+    return titleMatch || ingredientsMatch || tagsMatch;
+  });
+
   if (loading) {
     return (
       <div className="recipes-page">
@@ -229,6 +242,25 @@ export default function RecipesPage() {
             + Add Recipe
           </button>
         </div>
+      </div>
+
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search recipes by title, ingredients, or tags..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input"
+        />
+        {searchQuery && (
+          <button
+            className="clear-search"
+            onClick={() => setSearchQuery('')}
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -296,9 +328,13 @@ export default function RecipesPage() {
         <div className="empty-state">
           <p>No recipes yet. Click "Add Recipe" to get started!</p>
         </div>
+      ) : filteredRecipes.length === 0 ? (
+        <div className="empty-state">
+          <p>No recipes found matching "{searchQuery}"</p>
+        </div>
       ) : (
         <div className="recipes-grid">
-          {recipes.map((recipe) => (
+          {filteredRecipes.map((recipe) => (
             <RecipeCard
               key={recipe.id}
               recipe={recipe}
