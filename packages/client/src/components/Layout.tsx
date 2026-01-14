@@ -18,6 +18,7 @@ export default function Layout() {
           <NavLink to="/recipes">Recipes</NavLink>
           <NavLink to="/calendar">Calendar</NavLink>
           <NavLink to="/grocery-list">Grocery List</NavLink>
+          <NavLink to="/household">Household</NavLink>
           <NavLink to="/settings">Settings</NavLink>
         </div>
         {user && (

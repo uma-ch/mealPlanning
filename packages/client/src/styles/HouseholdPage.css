@@ -1,0 +1,231 @@
+.household-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.household-page h1 {
+  margin-bottom: 2rem;
+  color: #1a202c;
+}
+
+.household-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.household-section h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #2d3748;
+  font-size: 1.25rem;
+}
+
+.household-section p {
+  margin: 0.5rem 0;
+  color: #4a5568;
+}
+
+/* Household Name */
+.household-name {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.household-name h3 {
+  margin: 0;
+  color: #1a202c;
+  flex: 1;
+}
+
+.edit-name-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.edit-name-form input {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Invite Code */
+.invite-code-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.invite-code {
+  background: #edf2f7;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  color: #667eea;
+  font-family: 'Courier New', monospace;
+}
+
+.help-text {
+  font-size: 0.875rem;
+  color: #718096;
+  margin-top: 0.5rem;
+}
+
+/* Members List */
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 4px;
+  border-left: 3px solid #667eea;
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.member-info strong {
+  color: #2d3748;
+}
+
+.member-date {
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+/* Join Section */
+.join-section {
+  border: 2px dashed #e2e8f0;
+  background: #fafafa;
+}
+
+.warning-text {
+  color: #d69e2e;
+  background: #fffaf0;
+  padding: 0.75rem;
+  border-radius: 4px;
+  border-left: 3px solid #d69e2e;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+.join-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.join-form input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #5568d3;
+}
+
+.btn-primary:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.btn-secondary:hover {
+  background: #cbd5e0;
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+/* Loading & Error */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #718096;
+}
+
+.error-message {
+  background: #fff5f5;
+  color: #c53030;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border-left: 3px solid #c53030;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .household-page {
+    padding: 1rem;
+  }
+
+  .invite-code-display {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .invite-code {
+    text-align: center;
+  }
+
+  .join-form {
+    flex-direction: column;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}

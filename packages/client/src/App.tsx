@@ -3,6 +3,7 @@ import RecipesPage from './pages/RecipesPage';
 import CalendarPage from './pages/CalendarPage';
 import GroceryListPage from './pages/GroceryListPage';
 import SettingsPage from './pages/SettingsPage';
+import HouseholdPage from './pages/HouseholdPage';
 import LoginPage from './pages/LoginPage';
 import VerifyPage from './pages/VerifyPage';
 import OAuthCallbackPage from './pages/OAuthCallbackPage';
@@ -28,6 +29,7 @@ function App() {
           <Route path="recipes" element={<RecipesPage />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="grocery-list" element={<GroceryListPage />} />
+          <Route path="household" element={<HouseholdPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Routes>

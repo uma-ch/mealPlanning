@@ -30,6 +30,16 @@ export interface JoinHouseholdRequest {
   inviteCode: string;
 }
 
+export interface HouseholdMember {
+  id: string;
+  email: string;
+  createdAt: Date;
+}
+
+export interface HouseholdDetails extends Household {
+  members: HouseholdMember[];
+}
+
 // Recipe
 export interface Recipe {
   id: string;
