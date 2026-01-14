@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { HouseholdDetails } from '@recipe-planner/shared';
+import { API_URL } from '../config';
 import '../styles/HouseholdPage.css';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 export default function HouseholdPage() {
   const [household, setHousehold] = useState<HouseholdDetails | null>(null);
@@ -22,7 +21,7 @@ export default function HouseholdPage() {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/household`, {
+      const response = await fetch(`${API_URL}/household`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,7 +50,7 @@ export default function HouseholdPage() {
       setError('');
 
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/household/join`, {
+      const response = await fetch(`${API_URL}/household/join`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,7 +88,7 @@ export default function HouseholdPage() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/api/household`, {
+      const response = await fetch(`${API_URL}/household`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
