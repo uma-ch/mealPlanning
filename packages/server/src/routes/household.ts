@@ -39,11 +39,11 @@ router.get('/', async (req, res) => {
       id: household.id,
       name: household.name,
       inviteCode: household.invite_code,
-      createdAt: household.created_at,
+      createdAt: new Date(household.created_at),
       members: membersResult.rows.map(member => ({
         id: member.id,
         email: member.email,
-        createdAt: member.created_at,
+        createdAt: new Date(member.created_at),
       })),
     };
 
