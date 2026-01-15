@@ -288,64 +288,7 @@ export default function CalendarPage() {
           onGenerateGroceryList={() => setShowGroceryModal(true)}
         />
 
-        {/* Mobile View - Recipe Search Only */}
-        <div className="mobile-view">
-          <div className="mobile-search-container">
-            <h3>Search Recipes</h3>
-            <input
-              type="text"
-              placeholder="Search recipes..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-            <div className="mobile-recipes-list">
-              {recipes
-                .filter((recipe) => {
-                  if (!searchQuery.trim()) return true;
-                  const query = searchQuery.toLowerCase();
-                  return (
-                    recipe.title.toLowerCase().includes(query) ||
-                    recipe.ingredients.toLowerCase().includes(query) ||
-                    recipe.tags?.some((tag) => tag.toLowerCase().includes(query))
-                  );
-                })
-                .map((recipe) => (
-                  <div
-                    key={recipe.id}
-                    className="mobile-recipe-card"
-                    onClick={() => {
-                      setSelectedDate(formatDateISO(currentWeekStart));
-                      setShowRecipeSelectionModal(true);
-                    }}
-                  >
-                    {recipe.imageUrl && (
-                      <img
-                        src={recipe.imageUrl}
-                        alt={recipe.title}
-                        className="mobile-recipe-thumbnail"
-                      />
-                    )}
-                    <div className="mobile-recipe-info">
-                      <h4>{recipe.title}</h4>
-                      {recipe.tags && recipe.tags.length > 0 && (
-                        <div className="recipe-tags">
-                          {recipe.tags.map((tag, idx) => (
-                            <span key={idx} className="tag">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Desktop View - Calendar Grid */}
-        <div className="calendar-content-wrapper desktop-view">
+        <div className="calendar-content-wrapper">
           <RecipeSidebar
             recipes={recipes}
             searchQuery={searchQuery}

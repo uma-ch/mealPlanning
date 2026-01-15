@@ -65,11 +65,6 @@
   overflow: hidden;
 }
 
-/* Mobile View - Hidden by default */
-.mobile-view {
-  display: none;
-}
-
 /* Recipe Sidebar */
 .recipe-sidebar {
   width: 320px;
@@ -380,107 +375,6 @@
     height: auto;
   }
 
-  /* Hide desktop view on mobile */
-  .desktop-view {
-    display: none !important;
-  }
-
-  /* Show mobile view on mobile */
-  .mobile-view {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  .mobile-search-container {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    background: white;
-    flex: 1;
-    overflow: hidden;
-  }
-
-  .mobile-search-container h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.25rem;
-    color: #333;
-  }
-
-  .mobile-search-container .search-input {
-    width: 100%;
-    padding: 0.875rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .mobile-search-container .search-input:focus {
-    outline: none;
-    border-color: #1976d2;
-    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
-  }
-
-  .mobile-recipes-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    overflow-y: auto;
-    flex: 1;
-  }
-
-  .mobile-recipe-card {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem;
-    background: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .mobile-recipe-card:hover {
-    border-color: #1976d2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .mobile-recipe-thumbnail {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 6px;
-    flex-shrink: 0;
-  }
-
-  .mobile-recipe-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .mobile-recipe-info h4 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-  }
-
-  .mobile-recipe-info .recipe-tags {
-    display: flex;
-    gap: 0.25rem;
-    flex-wrap: wrap;
-  }
-
-  .mobile-recipe-info .tag {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    background: #e3f2fd;
-    color: #1976d2;
-    border-radius: 12px;
-  }
-
   .calendar-header {
     flex-direction: column;
     gap: 1rem;
@@ -505,6 +399,43 @@
     width: 36px;
     height: 36px;
     font-size: 1.25rem;
+  }
+
+  .week-view {
+    padding: 1rem;
+  }
+
+  .week-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-sidebar {
+    max-height: 150px;
+  }
+
+  .sidebar-header {
+    padding: 1rem;
+  }
+
+  .sidebar-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .day-cell {
+    min-height: 150px;
+    padding: 0.5rem;
+  }
+
+  .day-header {
+    font-size: 0.875rem;
+  }
+
+  .day-name {
+    font-size: 0.75rem;
+  }
+
+  .day-number {
+    font-size: 1.1rem;
   }
 
   .recipe-option {
