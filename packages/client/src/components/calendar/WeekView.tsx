@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { CalendarEntry } from '@recipe-planner/shared';
+import type { CalendarEntry, Recipe } from '@recipe-planner/shared';
 import DayCell from './DayCell';
 import { addDays, isToday, formatDateISO } from '../../utils/dateHelpers';
 
@@ -8,9 +8,10 @@ interface WeekViewProps {
   entries: CalendarEntry[];
   onRemoveRecipe: (entryId: string) => void;
   onClickToAddRecipe?: (date: string) => void;
+  onViewRecipe?: (recipe: Recipe) => void;
 }
 
-export default function WeekView({ weekStart, entries, onRemoveRecipe, onClickToAddRecipe }: WeekViewProps) {
+export default function WeekView({ weekStart, entries, onRemoveRecipe, onClickToAddRecipe, onViewRecipe }: WeekViewProps) {
   // Generate 7 days starting from weekStart
   const weekDays = useMemo(() => {
     return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
@@ -38,6 +39,7 @@ export default function WeekView({ weekStart, entries, onRemoveRecipe, onClickTo
               entry={entryByDate[dateKey]}
               onRemoveRecipe={onRemoveRecipe}
               onClickToAddRecipe={onClickToAddRecipe}
+              onViewRecipe={onViewRecipe}
               isToday={isToday(day)}
             />
           );

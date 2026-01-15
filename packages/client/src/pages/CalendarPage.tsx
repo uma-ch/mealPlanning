@@ -17,6 +17,7 @@ import RecipeSidebar from '../components/calendar/RecipeSidebar';
 import WeekView from '../components/calendar/WeekView';
 import GroceryListModal from '../components/calendar/GroceryListModal';
 import RecipeSelectionModal from '../components/calendar/RecipeSelectionModal';
+import RecipeDetail from '../components/RecipeDetail';
 import { getWeekStart, addDays, formatDateISO } from '../utils/dateHelpers';
 import '../styles/calendar.css';
 
@@ -32,6 +33,7 @@ export default function CalendarPage() {
   const [showGroceryModal, setShowGroceryModal] = useState(false);
   const [showRecipeSelectionModal, setShowRecipeSelectionModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [viewingRecipe, setViewingRecipe] = useState<Recipe | null>(null);
 
   // Drag-and-drop sensors
   const sensors = useSensors(
@@ -311,6 +313,7 @@ export default function CalendarPage() {
             entries={calendarEntries}
             onRemoveRecipe={handleRemoveRecipeFromDay}
             onClickToAddRecipe={handleClickToAddRecipe}
+            onViewRecipe={setViewingRecipe}
           />
         </div>
 
@@ -343,6 +346,21 @@ export default function CalendarPage() {
             onClose={() => {
               setShowRecipeSelectionModal(false);
               setSelectedDate(null);
+            }}
+          />
+        )}
+
+        {viewingRecipe && (
+          <RecipeDetail
+            recipe={viewingRecipe}
+            onClose={() => setViewingRecipe(null)}
+            onEdit={() => {
+              // Calendar doesn't support editing, just close for now
+              setViewingRecipe(null);
+            }}
+            onDelete={() => {
+              // Calendar doesn't support deleting from here
+              setViewingRecipe(null);
             }}
           />
         )}

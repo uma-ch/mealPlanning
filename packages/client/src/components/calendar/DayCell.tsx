@@ -1,5 +1,5 @@
 import { useDroppable } from '@dnd-kit/core';
-import type { CalendarEntry } from '@recipe-planner/shared';
+import type { CalendarEntry, Recipe } from '@recipe-planner/shared';
 import CalendarRecipeCard from './CalendarRecipeCard';
 import { getDayName, formatDateISO } from '../../utils/dateHelpers';
 
@@ -8,10 +8,11 @@ interface DayCellProps {
   entry?: CalendarEntry;
   onRemoveRecipe: (entryId: string) => void;
   onClickToAddRecipe?: (date: string) => void;
+  onViewRecipe?: (recipe: Recipe) => void;
   isToday: boolean;
 }
 
-export default function DayCell({ date, entry, onRemoveRecipe, onClickToAddRecipe, isToday }: DayCellProps) {
+export default function DayCell({ date, entry, onRemoveRecipe, onClickToAddRecipe, onViewRecipe, isToday }: DayCellProps) {
   const dateString = formatDateISO(date); // YYYY-MM-DD in local timezone
 
   const { setNodeRef, isOver } = useDroppable({
@@ -37,7 +38,7 @@ export default function DayCell({ date, entry, onRemoveRecipe, onClickToAddRecip
 
       <div className="day-content" onClick={handleClick}>
         {entry ? (
-          <CalendarRecipeCard entry={entry} onRemove={onRemoveRecipe} />
+          <CalendarRecipeCard entry={entry} onRemove={onRemoveRecipe} onViewRecipe={onViewRecipe} />
         ) : (
           <div className="empty-day">Click to add recipe</div>
         )}

@@ -1,16 +1,26 @@
-import type { CalendarEntry } from '@recipe-planner/shared';
+import type { CalendarEntry, Recipe } from '@recipe-planner/shared';
 
 interface CalendarRecipeCardProps {
   entry: CalendarEntry;
   onRemove: (entryId: string) => void;
+  onViewRecipe?: (recipe: Recipe) => void;
 }
 
-export default function CalendarRecipeCard({ entry, onRemove }: CalendarRecipeCardProps) {
+export default function CalendarRecipeCard({ entry, onRemove, onViewRecipe }: CalendarRecipeCardProps) {
   // Check if this is a custom text entry or a recipe entry
   const isCustomText = entry.customText && !entry.recipeId;
 
+  const handleCardClick = () => {
+    if (!isCustomText && entry.recipe && onViewRecipe) {
+      onViewRecipe(entry.recipe);
+    }
+  };
+
   return (
-    <div className={`calendar-recipe-card ${isCustomText ? 'custom-text-entry' : ''}`}>
+    <div
+      className={`calendar-recipe-card ${isCustomText ? 'custom-text-entry' : ''} ${!isCustomText && onViewRecipe ? 'clickable' : ''}`}
+      onClick={handleCardClick}
+    >
       {isCustomText ? (
         // Display custom text entry
         <div className="custom-text-content">
