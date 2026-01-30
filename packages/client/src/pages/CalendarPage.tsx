@@ -290,17 +290,6 @@ export default function CalendarPage() {
           onGenerateGroceryList={() => setShowGroceryModal(true)}
         />
 
-        {/* Mobile-only search bar */}
-        <div className="mobile-search-bar">
-          <input
-            type="text"
-            placeholder="Search recipes..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-        </div>
-
         <div className="calendar-content-wrapper">
           <RecipeSidebar
             recipes={recipes}
