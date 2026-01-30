@@ -37,11 +37,11 @@ export default function RecipeSelectionModal({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="recipe-form-modal" onClick={onClose}>
       <div className="modal-content recipe-selection-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Add to {formattedDate}</h2>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <button className="close-btn" onClick={onClose}>×</button>
         </div>
 
         <div className="modal-body">

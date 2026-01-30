@@ -50,7 +50,7 @@ export default function GroceryListModal({
   };
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
+    <div className="recipe-form-modal" onClick={handleOverlayClick}>
       <div className="modal-content">
         <div className="modal-header">
           <h2>Generate Grocery List</h2>
