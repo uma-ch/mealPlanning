@@ -20,8 +20,8 @@ export default function DayCell({ date, entry, onRemoveRecipe, onClickToAddRecip
     data: { date: dateString },
   });
 
-  const handleClick = () => {
-    if (!entry && onClickToAddRecipe) {
+  const handleEmptyDayClick = () => {
+    if (onClickToAddRecipe) {
       onClickToAddRecipe(dateString);
     }
   };
@@ -36,11 +36,17 @@ export default function DayCell({ date, entry, onRemoveRecipe, onClickToAddRecip
         <span className="day-number">{date.getDate()}</span>
       </div>
 
-      <div className="day-content" onClick={handleClick}>
+      <div className="day-content">
         {entry ? (
           <CalendarRecipeCard entry={entry} onRemove={onRemoveRecipe} onViewRecipe={onViewRecipe} />
         ) : (
-          <div className="empty-day">Click to add recipe</div>
+          <button
+            type="button"
+            className="empty-day"
+            onClick={handleEmptyDayClick}
+          >
+            Tap to add recipe
+          </button>
         )}
       </div>
     </div>

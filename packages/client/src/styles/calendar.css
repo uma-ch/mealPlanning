@@ -252,6 +252,9 @@
   touch-action: manipulation;
   user-select: none;
   -webkit-tap-highlight-color: rgba(25, 118, 210, 0.1);
+  background: transparent;
+  font-family: inherit;
+  width: 100%;
 }
 
 /* Calendar Recipe Card */
@@ -446,6 +449,20 @@
   .day-cell {
     min-height: 150px;
     padding: 0.5rem;
+  }
+
+  /* Make empty days more tappable on mobile */
+  .empty-day {
+    min-height: 100px;
+    font-size: 1rem;
+    border-width: 3px;
+    font-weight: 500;
+  }
+
+  .empty-day:active {
+    background-color: #f0f4ff;
+    border-color: #1976d2;
+    color: #1976d2;
   }
 
   .day-header {
